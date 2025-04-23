@@ -1,0 +1,10 @@
+[build]
+  base = "" # Change this if your React app is in a subdirectory (e.g., "frontend")
+  command = "npm run build" # Or "yarn build" if using Yarn
+  publish = "build" # The directory Netlify will deploy (React's build folder)
+
+# Redirect all routes to index.html (for React Router support)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
