@@ -28,7 +28,7 @@ const RoomExpenditureDetails = () => {
     const fetchExpenses = async () => {
       setLoading(true);
       setError('');
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('oauthstate');
   
       if (!token) {
         setError('Không có token xác thực. Vui lòng đăng nhập lại.');
