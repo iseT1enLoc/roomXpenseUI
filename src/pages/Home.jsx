@@ -14,9 +14,16 @@ const HomePage = () => {
         window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/public/google/login`; // Use the URL returned from the backend
       } else {
         console.error("Google OAuth URL is not available.");
+        console.log("URL:", window.location.href);
+        console.log("Search Params:", window.location.search);
+        console.log("Token:", new URLSearchParams(window.location.search).get("token"));
+
       }
     } catch (error) {
       console.error("Error during Google login:", error);
+      console.log("URL:", window.location.href);
+      console.log("Search Params:", window.location.search);
+      console.log("Token:", new URLSearchParams(window.location.search).get("token"));
     }
   };
 

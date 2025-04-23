@@ -20,6 +20,9 @@ const SuccessPage = () => {
   const [showForm, setShowForm] = useState(false);
 
   const room_id = import.meta.env.VITE_ROOM_ID
+  console.log("URL:", window.location.href);
+  console.log("Search Params:", window.location.search);
+  console.log("Token:", new URLSearchParams(window.location.search).get("token"));
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const urlToken = queryParams.get('token');
