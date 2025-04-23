@@ -19,7 +19,7 @@ const SuccessPage = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [showForm, setShowForm] = useState(false);
 
-  const room_id = 'adfb6061-da5c-48a5-8f84-a7f439441feb';
+  const room_id = import.meta.env.VITE_ROOM_ID
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const urlToken = queryParams.get('token');
@@ -40,7 +40,7 @@ const SuccessPage = () => {
     console.log('Using token:', tokenToUse);
   
     axios
-      .get('http://localhost:8080/api/protected/user/me', {
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/protected/user/me`, {
         headers: { Authorization: `Bearer ${tokenToUse}` },
       })
       .then((res) => {
@@ -90,7 +90,7 @@ const SuccessPage = () => {
     console.log(currentUser.data.user_id)
     try {
       await axios.post(
-        'http://localhost:8080/api/protected/expense',
+        `${import.meta.env.VITE_BACKEND_URL}/api/protected/expense`,
         {
           room_id,
           title: formData.title,
@@ -110,7 +110,7 @@ const SuccessPage = () => {
       setTimeout(() => {
         setSuccessMessage('');
         setShowForm(false);
-      }, 2000);
+      }, 200);
     } catch (err) {
       console.error(err);
       setError('Lỗi khi thêm khoản chi. Vui lòng thử lại.');

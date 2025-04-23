@@ -1,16 +1,17 @@
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
-import { getGoogleOAuthUrl } from "../api/authService";
 
 const HomePage = () => {
   const handleGoogleLogin = async () => {
     try {
       // Step 1: Get the Google OAuth URL from the Go backend
-      const googleOAuthUrl = "http://localhost:8080/api/public/google/login";
+      const googleOAuthUrl = `${import.meta.env.VITE_BACKEND_URL}/api/public/google/login`;
+      console.log(googleOAuthUrl)
       
       // Step 2: Redirect the user to Google's OAuth consent screen
       if (googleOAuthUrl) {
-        window.location.href = "http://localhost:8080/api/public/google/login"; // Use the URL returned from the backend
+        console.log(googleOAuthUrl)
+        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/public/google/login`; // Use the URL returned from the backend
       } else {
         console.error("Google OAuth URL is not available.");
       }
@@ -23,7 +24,7 @@ const HomePage = () => {
     <div className="h-screen w-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-purple-100">
       <div className="text-center max-w-md px-6 space-y-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
-          Student Room Expenditure For 703 Hommies
+          CHÀO AE 703 NHÁ, BẢNG TEST CHO CÓ ĐỘNG LỰC LÀM TIẾP
         </h1>
 
         <p className="text-md sm:text-lg text-gray-600">

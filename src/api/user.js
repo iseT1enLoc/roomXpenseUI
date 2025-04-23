@@ -1,6 +1,6 @@
 export const updateUser = async (token, user, instance) => {
     try {
-      const res = await instance.put(`http://localhost:8080/api/protected/user/${user.id}`, user, {
+      const res = await instance.put(`${import.meta.env.VITE_BACKEND_URL}/api/protected/user/${user.id}`, user, {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log('Update Ok');
@@ -18,7 +18,7 @@ export const updateUser = async (token, user, instance) => {
   
   export const getCurrentUser = async (instance, token) => {
     try {
-      const res = await instance.get('http://localhost:8080/api/protected/user/me', {
+      const res = await instance.get(`${import.meta.env.VITE_BACKEND_URL}/api/protected/user/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return res.data;

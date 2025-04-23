@@ -13,8 +13,8 @@ const RoomExpenditureDetails = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const room_id = 'adfb6061-da5c-48a5-8f84-a7f439441feb';
-  const baseUrl = 'http://localhost:8080/api/protected/expense/calc';
+  const room_id = import.meta.env.VITE_ROOM_ID
+  const baseUrl = `${import.meta.env.VITE_BACKEND_URL}/api/protected/expense/calc`;
 
   const formatCurrency = (amount) => {
     const num = parseInt(amount, 10);

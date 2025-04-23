@@ -1,7 +1,7 @@
 // src/services/googleAuth.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080'; // Your Go backend URL
+const API_URL = import.meta.env.VITE_BACKEND_URL
 
 // Function to get the OAuth URL from the Go backend
 export const getGoogleOAuthUrl = async () => {

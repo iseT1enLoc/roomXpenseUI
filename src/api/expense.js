@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8080'; // Adjust if needed
+const API_BASE = import.meta.env.VITE_BACKEND_URL
 
 // Helper function to get the token from localStorage
 const getAuthHeaders = () => {
