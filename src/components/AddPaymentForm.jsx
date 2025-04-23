@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { createExpense } from '../api/expense'; // Updated to use your API layer
+import { createExpense } from '../api/expense'; // Import your API function for creating an expense
 
 const AddPaymentForm = ({ onCancel }) => {
   const [formData, setFormData] = useState({
@@ -13,6 +13,8 @@ const AddPaymentForm = ({ onCancel }) => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
+
+  const room_id = "3a8d661e-5589-4148-8627-728ba624fe2f"; // Hardcoded room_id, can be dynamic
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,26 +33,31 @@ const AddPaymentForm = ({ onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation: Ensure amount is valid and title is provided
     if (!formData.title || !formData.amount || isNaN(formData.amount)) {
       setError('Input không hợp lệ');
       return;
     }
 
     try {
+      // Call the API to create an expense, passing necessary data
       await createExpense({
-
-        room_id:"3a8d661e-5589-4148-8627-728ba624fe2f",
-        title: formData.title,
-        amount: parseFloat(formData.amount),
-        notes: formData.notes
+        room_id,        // The room_id for the expense
+        title: formData.title,  // Title of the expense
+        amount: parseFloat(formData.amount),  // Convert amount to float
+        notes: formData.notes   // Optional notes for the expense
       });
 
+      // On success, show success message and reset form
       setSuccessMessage('Thêm khoản chi thành công!');
       setError('');
       setFormData({ title: '', amount: '', notes: '' });
 
-      setTimeout(() => navigate(-1), 3000);
+      // Navigate back after a short delay
+      setTimeout(() => navigate('/successpage'), 3000);
     } catch (err) {
+      // Handle errors
       setError('Thêm khoản chi thất bại. Vui lòng thử lại.');
       setSuccessMessage('');
     }
@@ -65,11 +72,13 @@ const AddPaymentForm = ({ onCancel }) => {
         <h1 className="text-4xl font-semibold text-center text-green-700">Tiền phòng 703</h1>
       </div>
 
+      {/* Error and Success Messages */}
       {error && <div className="text-red-500 mb-4 text-center text-lg">{error}</div>}
       {successMessage && <div className="text-green-600 mb-4 text-center text-lg">{successMessage}</div>}
 
       <form onSubmit={handleSubmit}>
         <div className="space-y-8">
+          {/* Title Input */}
           <div className="flex flex-col">
             <label htmlFor="title" className="text-xl text-green-700 mb-2">Tên khoản chi</label>
             <input
@@ -83,6 +92,7 @@ const AddPaymentForm = ({ onCancel }) => {
             />
           </div>
 
+          {/* Amount Input */}
           <div className="flex flex-col">
             <label htmlFor="amount" className="text-xl text-green-700 mb-2">Số tiền</label>
             <input
@@ -105,6 +115,7 @@ const AddPaymentForm = ({ onCancel }) => {
             )}
           </div>
 
+          {/* Notes Input */}
           <div className="flex flex-col">
             <label htmlFor="notes" className="text-xl text-green-700 mb-2">Ghi chú</label>
             <textarea
@@ -118,6 +129,7 @@ const AddPaymentForm = ({ onCancel }) => {
             />
           </div>
 
+          {/* Submit Button */}
           <div className="flex justify-center mt-8">
             <button
               type="submit"

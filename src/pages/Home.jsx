@@ -20,8 +20,8 @@ const HomePage = () => {
   };
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-purple-100">
-      <div className="text-center max-w-md w-full px-6 space-y-8">
+    <div className="h-screen w-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-purple-100">
+      <div className="text-center max-w-md px-6 space-y-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
           Student Room Expenditure For 703 Hommies
         </h1>

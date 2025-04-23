@@ -16,10 +16,10 @@ export const getGoogleOAuthUrl = async () => {
 
 // Function to store the token in localStorage
 export const storeAuthToken = (token) => {
-  localStorage.setItem('authState', token); // Store token in localStorage
+  localStorage.setItem('oauthstate', token); // Store token in localStorage
 };
 
 // Function to retrieve the token from localStorage
 export const getAuthToken = () => {
-  return localStorage.getItem('authState');
+  return localStorage.getItem('oauthstate');
 };
