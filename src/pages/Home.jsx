@@ -40,7 +40,7 @@ const HomePage = () => {
 
         <button
           onClick={handleGoogleLogin}
-          className="mx-auto px-6 py-3 flex items-center justify-center gap-3 bg-white text-gray-800 border border-gray-300 rounded-full shadow-md hover:shadow-lg hover:bg-gray-100 transition"
+          className="mx-auto px-6 py-3 flex items-center justify-center gap-3 bg-white dark:bg-white text-gray-800 border border-gray-300 rounded-full shadow-md hover:shadow-lg hover:bg-gray-100 transition"
         >
           <FcGoogle className="text-2xl" />
           Continue with Google

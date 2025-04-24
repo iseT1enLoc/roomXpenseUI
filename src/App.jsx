@@ -4,6 +4,7 @@ import HomePage from './pages/Home';
 import SuccessPage from './pages/SuccessLoginPage';
 import RoomExpenditureDetails from './pages/RoomExpenditureDetail';
 import TestingMessage from './components/Test';
+import MemberExpenseDetails from './pages/MemberExpenseDetails';
 
 function App() {
   return (
@@ -14,6 +15,8 @@ function App() {
           <Route path="/successpage" element={<SuccessPage />} />
           <Route path="/test" element={<TestingMessage/>} />
           <Route path="/room-expense-details" element={<RoomExpenditureDetails />} />
+          <Route path="/member-expense-details" element={<MemberExpenseDetails />} />
+
         </Routes>
         {/* Optionally you can add a footer here */}
     </Router>
