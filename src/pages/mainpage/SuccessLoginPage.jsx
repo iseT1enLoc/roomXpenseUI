@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import { form } from 'framer-motion/client';
+
 const expenseOptions = [
   'Thùng nước',
   'Tiền điện',
@@ -11,6 +13,7 @@ const expenseOptions = [
 ];
 
 const SuccessPage = () => {
+  const { room_id } = useParams(); // NEW
   const location = useLocation();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ title: '', amount: '', number: 1, notes: '' });
@@ -19,10 +22,11 @@ const SuccessPage = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [showForm, setShowForm] = useState(false);
 
-  const room_id = import.meta.env.VITE_ROOM_ID
   console.log("URL:", window.location.href);
   console.log("Search Params:", window.location.search);
   console.log("Token:", new URLSearchParams(window.location.search).get("token"));
+  console.log("userme url",`${import.meta.env.VITE_BACKEND_URL}/api/protected/user/me`);
+
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const urlToken = queryParams.get('token');
@@ -35,35 +39,27 @@ const SuccessPage = () => {
   
     const tokenToUse = storedToken || urlToken;
     if (!tokenToUse) {
-      setError('Không tìm thấy token. Vui lòng đăng nhập lại.');
+      navigate('/', { replace: true });
       return;
     }
-  
-    // Log the token for debugging
-    console.log('Using token:', tokenToUse);
   
     axios
       .get(`${import.meta.env.VITE_BACKEND_URL}/api/protected/user/me`, {
         headers: { Authorization: `Bearer ${tokenToUse}` },
       })
       .then((res) => {
-        console.log('User data:', res.data); // Log the response data
         setCurrentUser(res.data);
       })
       .catch((err) => {
-        console.error('Error fetching user data:', err);
-        if (err.response) {
-          // If the server responds with an error, log the response details
-          console.error('Response error:', err.response.data);
-          setError('Không thể lấy thông tin người dùng: ' + err.response.data.message);
+        if (err.response?.status === 401) {
+          localStorage.removeItem('oauthstate'); // Optional: clear invalid token
+          navigate('/', { replace: true });
         } else {
-          // If there is no response (e.g., network issues)
-          setError('Lỗi mạng hoặc kết nối không ổn định.');
+          setError('Lỗi lấy thông tin người dùng.');
         }
       });
   }, [location, navigate]);
   
-
   const formatCurrency = (amount) => {
     const num = parseInt(amount, 10);
     if (isNaN(num)) return '';
@@ -80,7 +76,7 @@ const SuccessPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.title || !formData.amount || isNaN(formData.amount)) {
+    if (!formData.title || formData.amount<0 || isNaN(formData.amount)||formData.number<0) {
       setError('Vui lòng điền đầy đủ và hợp lệ các trường.');
       return;
     }
@@ -90,7 +86,7 @@ const SuccessPage = () => {
       setError('Không có token xác thực.');
       return;
     }
-    console.log(currentUser.data.user_id)
+
     try {
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/protected/expense`,
@@ -257,12 +253,22 @@ const SuccessPage = () => {
           className="text-center mt-8"
         >
           <Link
-            to="/room-expense-details"
+            to={`/room-expense-details/${room_id}`}
             className="px-8 py-4 bg-teal-500 text-white rounded-full hover:bg-teal-600 shadow-lg transform hover:scale-105 transition duration-200 ease-in-out"
           >
             Xem chi tiết chi tiêu phòng
           </Link>
         </motion.div>
+
+        {/* Back to Room List Button */}
+        <div className="text-center mt-4">
+          <motion.button
+            onClick={() => navigate('/rooms')} // Assuming '/room-list' is the route for the room list
+            className="px-8 py-4 bg-gray-500 text-black rounded-full hover:bg-gray-600 shadow-lg transform hover:scale-105 transition duration-200 ease-in-out"
+          >
+            Quay lại danh sách phòng
+          </motion.button>
+        </div>
       </div>
     </div>
   );

@@ -193,7 +193,7 @@ const MemberExpenseDetails = () => {
             className="text-center mt-8"
           >
             <Link
-              to="/room-expense-details"
+              to={`/room-expense-details/${room_id}`}
               className="px-8 py-4 bg-teal-500 text-white rounded-full hover:bg-teal-600 shadow-lg transform hover:scale-105 transition duration-200 ease-in-out"
             >
               Xem chi tiết chi tiêu phòng
