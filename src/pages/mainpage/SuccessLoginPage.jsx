@@ -125,8 +125,9 @@ const SuccessPage = () => {
     // Remove the token from localStorage
     localStorage.removeItem('oauthstate');
     
-    // Navigate the user back to the homepage or login page
-    navigate('/', { replace: true });
+    setTimeout(() => {
+      navigate('/');
+    }, 100); // slight delay
   };
   return (
     <div className="w-screen h-screen bg-gradient-to-br from-green-100 via-white to-teal-100 flex items-center justify-center">
