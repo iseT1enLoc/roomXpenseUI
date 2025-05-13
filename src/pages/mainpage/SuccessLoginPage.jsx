@@ -121,7 +121,13 @@ const SuccessPage = () => {
       setError('Lỗi khi thêm khoản chi. Vui lòng thử lại.');
     }
   };
-
+  const handleLogout = () => {
+    // Remove the token from localStorage
+    localStorage.removeItem('oauthstate');
+    
+    // Navigate the user back to the homepage or login page
+    navigate('/', { replace: true });
+  };
   return (
     <div className="w-screen h-screen bg-gradient-to-br from-green-100 via-white to-teal-100 flex items-center justify-center">
       <div className="w-full max-w-3xl bg-white rounded-xl shadow-xl p-8 mx-4 space-y-8">
@@ -246,7 +252,15 @@ const SuccessPage = () => {
             </motion.form>
           )}
         </AnimatePresence>
-
+        {/* Logout Button */}
+        <div className="mt-6 text-center">
+          <button
+            onClick={handleLogout}
+            className="px-6 py-3 bg-red-600 text-black rounded-full hover:bg-red-700 shadow-md transition transform hover:scale-105"
+          >
+            Đăng xuất
+          </button>
+        </div>
         {/* Organized Buttons */}
         <div className="flex flex-col md:flex-row md:justify-center items-center gap-4 mt-6">
           <Link
