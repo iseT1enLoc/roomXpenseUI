@@ -8,8 +8,10 @@ import HomePage from './pages/homepage/Home';
 import SuccessPage from './pages/mainpage/SuccessLoginPage';
 import RoomExpenditureDetails from './pages/RoomExpenditureDetail';
 import TestingMessage from './components/Test';
+import PrivateRoute from "./components/privateRoute";
 import MemberExpenseDetails from './pages/MemberExpenseDetails';
 import RoomList from './pages/RoomList';
+import SendExpenditurePage from './pages/email/Email';
 
 function App() {
   const dispatch = useDispatch();
@@ -22,20 +24,63 @@ function App() {
 
   return (
     <Router>
-      {/* Your header/navigation can go here */}
       <Routes>
-        {/* Redirect authenticated users to the SuccessPage */}
+        {/* Public route */}
         <Route
           path="/"
           element={isAuthenticated ? <Navigate to="/rooms" /> : <HomePage />}
         />
-        <Route path="/room/:room_id" element={<SuccessPage />} />
-        <Route path="/rooms" element={<RoomList />} />
-        <Route path="/test" element={<TestingMessage />} />
-        <Route path="/room-expense-details/:room_id" element={<RoomExpenditureDetails />} />
-        <Route path="/member-expense-details" element={<MemberExpenseDetails />} />
+
+        {/* Protected routes */}
+        <Route
+          path="/room/:room_id"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <SuccessPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/rooms"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <RoomList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/test"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <TestingMessage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/send-report/:room_id"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <SendExpenditurePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/room-expense-details/:room_id"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <RoomExpenditureDetails />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/member-expense-details"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <MemberExpenseDetails />
+            </PrivateRoute>
+          }
+        />
       </Routes>
-      {/* Optionally, you can add a footer here */}
     </Router>
   );
 }

@@ -59,7 +59,13 @@ const SuccessPage = () => {
         }
       });
   }, [location, navigate]);
-  
+    const handleSendReport = () => {
+      if (!inputRoomId.trim()) {
+        alert("Please enter a Room ID.");
+        return;
+      }
+      navigate(`/send-report/${inputRoomId}`);
+    };
   const formatCurrency = (amount) => {
     const num = parseInt(amount, 10);
     if (isNaN(num)) return '';
@@ -165,7 +171,6 @@ const SuccessPage = () => {
               transition={{ duration: 0.4 }}
               className="space-y-6"
             >
-              {/* Dropdown for expense title */}
               <div>
                 <label className="block text-lg font-medium text-gray-700 mb-2">Tên khoản chi</label>
                 <select
@@ -182,7 +187,6 @@ const SuccessPage = () => {
                 </select>
               </div>
 
-              {/* Amount input */}
               <div>
                 <label className="block text-lg font-medium text-gray-700 mb-2">Số tiền</label>
                 <input
@@ -198,7 +202,6 @@ const SuccessPage = () => {
                 )}
               </div>
 
-              {/* Quantity input */}
               <div>
                 <label className="block text-lg font-medium text-gray-700 mb-2">Số lượng</label>
                 <input
@@ -212,7 +215,6 @@ const SuccessPage = () => {
                 />
               </div>
 
-              {/* Notes */}
               <div>
                 <label className="block text-lg font-medium text-gray-700 mb-2">Ghi chú</label>
                 <textarea
@@ -225,7 +227,7 @@ const SuccessPage = () => {
                 ></textarea>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between items-center mt-6">
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
@@ -245,29 +247,29 @@ const SuccessPage = () => {
           )}
         </AnimatePresence>
 
-        <motion.div
-          key="view-expense-details"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="text-center mt-8"
-        >
+        {/* Organized Buttons */}
+        <div className="flex flex-col md:flex-row md:justify-center items-center gap-4 mt-6">
           <Link
             to={`/room-expense-details/${room_id}`}
-            className="px-8 py-4 bg-teal-500 text-white rounded-full hover:bg-teal-600 shadow-lg transform hover:scale-105 transition duration-200 ease-in-out"
+            className="px-6 py-3 bg-white text-black rounded-full hover:bg-teal-600 shadow-md transition transform hover:scale-105"
           >
-            Xem chi tiết chi tiêu phòng
+            Xem chi tiết chi tiêu
           </Link>
-        </motion.div>
+          {currentUser && currentUser.data.name === 'Loc Nguyen' && (
+          <Link
+            to={`/send-report/${room_id}`}
+            className="px-6 py-3 bg-white text-black rounded-full hover:bg-purple-600 shadow-md transition transform hover:scale-105"
+          >
+            Gửi email report
+          </Link>
+        )}
 
-        {/* Back to Room List Button */}
-        <div className="text-center mt-4">
-          <motion.button
-            onClick={() => navigate('/rooms')} // Assuming '/room-list' is the route for the room list
-            className="px-8 py-4 bg-gray-500 text-black rounded-full hover:bg-gray-600 shadow-lg transform hover:scale-105 transition duration-200 ease-in-out"
+          <button
+            onClick={() => navigate('/rooms')}
+            className="px-6 py-3 bg-gray-500 text-black rounded-full hover:bg-gray-600 shadow-md transition transform hover:scale-105"
           >
             Quay lại danh sách phòng
-          </motion.button>
+          </button>
         </div>
       </div>
     </div>
