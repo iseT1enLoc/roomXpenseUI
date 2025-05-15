@@ -1,19 +1,77 @@
 # 🖥️ roomUI
 
-A React-based frontend for the **roomXpenditure** backend system. This UI allows users to interact with the student room and expenditure management system, providing an easy and intuitive interface for managing room assignments, tracking expenses, and viewing reports.
+> _"Every month, we used to pass around the same crumpled notebook... names, numbers, confusion – and always, someone forgot to pay."_
+![Traditional methods](media/traditional.png)
+
+In many student rooms, managing shared expenses still means scribbling on whiteboards, juggling receipts, or endlessly updating Excel files. It's **slow**, **prone to mistakes**, and worst of all – it **steals your time**.
+## ❌ Before roomXepense:
+- 📋 You tracked expenses with **manual sheets** – full of errors and disputes.
+- 🧾 You had to **remind others** constantly – "Who paid for the last bill?"
+- 📆 You wasted hours every month **figuring out who owes what**.
+
+## ✅ After roomXpense:
+- 🖥️ Everything is digital, transparent, and **real-time**.
+- 📊 Every expense is logged and split **automatically**.
+- 💡 No more confusion – just **clear records** and **happy roommates**.
+---
+
+## 💬 Hear It From Us
+> _"We didn't just build a tool – we built **peace of mind** for student roommates."_
+
+With **roomUI**, you spend less time managing money and more time living your best student life.  
+Forget the spreadsheets. Forget the stress.  
+**Join the new way of managing shared living.**
+---
+
+## 🚀 Key Features of roomUI
+
+roomUI transforms how students manage shared living. Here’s what makes it powerful:
 
 ---
 
-## 🚀 Features
-
-- **User Authentication** – Secure login and registration for students and administrators.
-- **Room Management** – Manage room assignments and track room status.
-- **Expense Tracking** – Track shared living expenses and view individual contributions.
-- **Reports** – Visualize and generate monthly and yearly expenditure reports.
-- **Responsive Design** – Works seamlessly on both desktop and mobile devices.
-- **Real-time updates** – Receive live updates about room assignments and expense changes.
+### 🔐 User Authentication
+Secure login and registration for both students and administrators – ensuring access control and data protection.  
+![Login Page](media/login.png)
 
 ---
+
+### 🏠 Room Management
+Easily assign rooms, monitor room statuses, and manage members with intuitive tools.  
+![Success Page](media/succespage.png)
+
+---
+
+### 💸 Expense Tracking
+Log shared expenses, automatically calculate contributions, and ensure fairness for everyone.  
+![Expense Tracking](media/image.png)
+
+---
+
+### 📊 Reports & Insights
+Generate monthly and yearly expenditure summaries with visual reports that make budgeting easy.  
+![Email UI](media/email.png)  
+![Report Page](media/emailpage.jpg)
+
+---
+
+### 📱 Responsive Design
+roomUI is built to work seamlessly across **desktops**, **tablets**, and **mobile devices**.  
+![Responsive UI](media/featuresUI.png)
+
+---
+
+### 🔄 Real-time Updates
+Get live updates on room assignments, member actions, and expense modifications – no more delays.  
+![Room Member Detail](media/roomMemberDetail.png)
+
+---
+
+✅ **Modern UI. Smart Features. Better Living.**  
+Experience the future of student expense management with **roomUI**.
+
+---
+This project is aimed to help early predict vitamin D deficiency patients based on general report metrics and relavation demographics information.
+
 
 ## 📁 Project Structure
 
@@ -45,3 +103,13 @@ npm install
 ## 3. Run the server
 ``` bash
 npm run dev
+```
+### ✅ Short-Term Goals (1–2 Weeks)
+- 🔒 Improve error handling and form validation on login & registration pages
+- 🎨 Polish UI/UX design with consistent layout and theme colors
+- 📦 Integrate Toast notifications for actions (e.g., login success, error alerts)
+- 🧪 Add unit tests for core components using Jest & React Testing Library
+
+## 🔗 Backend Repository
+👉 **roomXpenditure Backend**: [https://github.com/iseT1enLoc/roomXpenditure](https://github.com/iseT1enLoc/roomXpenditure)
+
