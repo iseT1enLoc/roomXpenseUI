@@ -69,10 +69,6 @@ Get live updates on room assignments, member actions, and expense modifications 
 ✅ **Modern UI. Smart Features. Better Living.**  
 Experience the future of student expense management with **roomUI**.
 
----
-This project is aimed to help early predict vitamin D deficiency patients based on general report metrics and relavation demographics information.
-
-
 ## 📁 Project Structure
 
 ```bash
