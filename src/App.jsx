@@ -37,7 +37,6 @@ function App() {
         <Route path="/room-expense-details/:room_id" element={<RoomExpenditureDetails />} />
         <Route path="/member-expense-details" element={<MemberExpenseDetails />} />
       </Routes>
-      {/* Optionally, you can add a footer here */}
     </Router>
   );
 }
