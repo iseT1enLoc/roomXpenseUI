@@ -291,4 +291,4 @@ const SuccessPage = () => {
   );
 };
 
-export default SuccessPage;
+export default SuccessPage

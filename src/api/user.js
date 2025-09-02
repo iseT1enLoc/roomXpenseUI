@@ -14,9 +14,9 @@ export const updateUser = async (token, user, instance) => {
         throw new Error('Request error: ' + err.message);
       }
     }
-  };
+};
   
-  export const getCurrentUser = async (instance, token) => {
+export const getCurrentUser = async (instance, token) => {
     try {
       const res = await instance.get(`${import.meta.env.VITE_BACKEND_URL}/api/protected/user/me`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -31,5 +31,5 @@ export const updateUser = async (token, user, instance) => {
         throw new Error('Request error: ' + err.message);
       }
     }
-  };
+};
   

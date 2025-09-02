@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { ArrowLeft, RefreshCw } from 'lucide-react';
+import {
+  fetchRoomExpenditure,
+  clearRoomExpenditure,
+  clearRoomExpenditureError,
+  selectRoomExpenditure,
+  selectRoomExpenditureLoading,
+  selectRoomExpenditureError,
+} from '../app/expenseSlice';
 
 const RoomExpenditureDetails = () => {
-  const [expensesData, setExpensesData] = useState(null);
-  const [selectedYear, setSelectedYear] = useState('2025');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { room_id } = useParams();
+
+  const expensesData = useSelector(selectRoomExpenditure);
+  const loading = useSelector(selectRoomExpenditureLoading);
+  const error = useSelector(selectRoomExpenditureError);
+
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedDay, setSelectedDay] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [warning, setWarning] = useState(''); // State to hold warning message
-  const navigate = useNavigate();
+  const [warning, setWarning] = useState('');
 
-  const { room_id } = useParams();
-  const baseUrl = `${import.meta.env.VITE_BACKEND_URL}/api/protected/expense/calc`;
+  const token = localStorage.getItem('oauthstate');
 
+  // Format currency
   const formatCurrency = (amount) => {
     const num = parseInt(amount, 10);
     if (isNaN(num)) return '';
@@ -26,191 +37,144 @@ const RoomExpenditureDetails = () => {
     return `${num} đồng`;
   };
 
+  // Fetch room expenditure whenever filters change
   useEffect(() => {
-    const fetchExpenses = async () => {
-      setLoading(true);
-      setError('');
-      const token = localStorage.getItem('oauthstate');
+    if (!token) {
+      navigate('/', { replace: true });
+      return;
+    }
 
-      if (!token) {
-        setError('Không có token xác thực. Vui lòng đăng nhập lại.');
-        setLoading(false);
-        return;
-      }
+    dispatch(fetchRoomExpenditure({
+      room_id,
+      year: selectedYear,
+      month: selectedMonth || undefined,
+      day: selectedDay || undefined,
+      token,
+    }));
+  }, [room_id, selectedYear, selectedMonth, selectedDay, dispatch, navigate, token]);
 
-      const params = {
+  // Clear on unmount
+  useEffect(() => {
+    return () => {
+      dispatch(clearRoomExpenditure());
+    };
+  }, [dispatch]);
+
+  const handleRefresh = () => {
+    if (token) {
+      dispatch(clearRoomExpenditureError());
+      dispatch(fetchRoomExpenditure({
         room_id,
         year: selectedYear,
-      };
-      if (selectedMonth) params.month = selectedMonth;
-      if (selectedDay) params.day = selectedDay;
-
-      try {
-        const response = await axios.get(baseUrl, {
-          params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.data.status === 'success') {
-          setExpensesData(response.data.data);
-        } else {
-          setError('Không thể lấy dữ liệu chi tiêu phòng.');
-        }
-      } catch (err) {
-        setError('Lỗi khi tải dữ liệu chi tiêu.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchExpenses();
-  }, [selectedYear, selectedMonth, selectedDay]);
-
-  // Handler to validate input for year, month, and day
-  const handleYearChange = (e) => {
-    const value = e.target.value;
-    if (value >= 2023) {
-      setSelectedYear(value);
+        month: selectedMonth || undefined,
+        day: selectedDay || undefined,
+        token,
+      }));
     }
   };
 
-  const handleMonthChange = (e) => {
-    const value = e.target.value;
-    if (value >= 1 && value <= 12) {
-      setSelectedMonth(value);
-    }
-  };
-
-  const handleDayChange = (e) => {
-    const value = e.target.value;
-    if (value >= 1 && value <= 31) {
-      setSelectedDay(value);
-    }
-  };
-
-  // Function to validate quantity and money inputs for "Thêm khoản chi"
-  const handleAddExpense = (quantity, money) => {
-    if (quantity < 0 || money < 0) {
-      setWarning('Số lượng và tiền không thể âm.');
-    } else {
-      setWarning('');
-      // Proceed with adding the expense
-    }
+  const getDaysInMonth = () => {
+    if (!selectedMonth) return 31;
+    return new Date(selectedYear, selectedMonth, 0).getDate();
   };
 
   return (
-    <div className="w-screen h-screen bg-gradient-to-br from-green-100 via-white to-teal-100 bg-cover flex items-center justify-center px-6 py-12">
-      <div className="w-screen max-w-3xl bg-white rounded-xl shadow-xl p-8 space-y-8 relative">
+    <div className="w-screen h-screen bg-gradient-to-br from-green-100 via-white to-teal-100 flex items-center justify-center px-6 py-12">
+      <div className="w-screen max-w-4xl bg-white rounded-xl shadow-xl p-8 space-y-8 relative">
 
-        {/* Back Button */}
-        <Link
-          to={`/room/${room_id}`}
-          className="absolute top-4 left-4 flex items-center text-green-700 hover:text-green-900"
-        >
-          <ArrowLeft className="mr-2" />
+        {/* Back button */}
+        <Link to={`/room/${room_id}`} className="absolute top-4 left-4 flex items-center text-green-700 hover:text-green-900 transition-colors">
+          <ArrowLeft className="mr-2" size={20} />
           <span className="font-medium">Quay lại</span>
         </Link>
 
+        {/* Refresh button */}
+        <button
+          onClick={handleRefresh}
+          disabled={loading}
+          className="absolute top-4 right-4 flex items-center text-green-700 hover:text-green-900 transition-colors disabled:opacity-50"
+        >
+          <RefreshCw className={`mr-2 ${loading ? 'animate-spin' : ''}`} size={20} />
+          <span className="font-medium">Làm mới</span>
+        </button>
+
+        {/* Header */}
         <motion.h1
-          className="text-3xl font-bold text-center text-green-800"
+          className="text-3xl font-bold text-center text-green-800 mt-8"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
         >
-          Chi Tiêu Phòng 703
+          Chi Tiêu Phòng {room_id}
         </motion.h1>
 
-        {loading && <p className="text-center text-gray-500">Đang tải dữ liệu...</p>}
-        {error && <p className="text-red-500 text-center">{error}</p>}
-        {warning && <p className="text-yellow-500 text-center">{warning}</p>} {/* Display warning */}
+        {/* Warning */}
+        {warning && <motion.div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg text-center">{warning}</motion.div>}
 
-        {/* Filter Section */}
-        <div className="flex justify-center space-x-4 mb-8">
-          <div>
-            <label htmlFor="year" className="block text-lg font-medium text-gray-700">Năm</label>
-            <select
-              id="year"
-              value={selectedYear}
-              onChange={handleYearChange}
-              className="w-full px-4 py-2 border rounded-lg shadow-sm"
-            >
+        {/* Error */}
+        {error && (
+          <motion.div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center">
+            <p>{error}</p>
+            <button onClick={handleRefresh} className="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">Thử lại</button>
+          </motion.div>
+        )}
+
+        {/* Filters */}
+        <div className="bg-gray-50 rounded-lg p-6 flex flex-wrap justify-center gap-4">
+          <div className="flex flex-col">
+            <label htmlFor="year" className="text-sm font-medium mb-1">Năm</label>
+            <select id="year" value={selectedYear} onChange={e => setSelectedYear(e.target.value)}>
               <option value="2025">2025</option>
               <option value="2024">2024</option>
               <option value="2023">2023</option>
             </select>
           </div>
-
-          <div>
-            <label htmlFor="month" className="block text-lg font-medium text-gray-700">Tháng</label>
-            <select
-              id="month"
-              value={selectedMonth}
-              onChange={handleMonthChange}
-              className="w-full px-4 py-2 border rounded-lg shadow-sm"
-            >
-              <option value="">Chọn tháng</option>
-              {[...Array(12)].map((_, i) => (
-                <option key={i + 1} value={i + 1}>Tháng {i + 1}</option>
-              ))}
+          <div className="flex flex-col">
+            <label htmlFor="month" className="text-sm font-medium mb-1">Tháng</label>
+            <select id="month" value={selectedMonth} onChange={e => { setSelectedMonth(e.target.value); setSelectedDay(''); }}>
+              <option value="">Tất cả tháng</option>
+              {[...Array(12)].map((_, i) => <option key={i+1} value={i+1}>Tháng {i+1}</option>)}
             </select>
           </div>
-
-          <div>
-            <label htmlFor="day" className="block text-lg font-medium text-gray-700">Ngày</label>
-            <select
-              id="day"
-              value={selectedDay}
-              onChange={handleDayChange}
-              className="w-full px-4 py-2 border rounded-lg shadow-sm"
-            >
-              <option value="">Chọn ngày</option>
-              {[...Array(31)].map((_, i) => (
-                <option key={i + 1} value={i + 1}>{i + 1}</option>
-              ))}
+          <div className="flex flex-col">
+            <label htmlFor="day" className="text-sm font-medium mb-1">Ngày</label>
+            <select id="day" value={selectedDay} onChange={e => setSelectedDay(e.target.value)} disabled={!selectedMonth}>
+              <option value="">Tất cả ngày</option>
+              {[...Array(getDaysInMonth())].map((_, i) => <option key={i+1} value={i+1}>{i+1}</option>)}
             </select>
           </div>
         </div>
 
-        {/* Total Room Expense */}
-        {expensesData?.room_total_expense !== undefined && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-8"
-          >
-            <p className="text-xl font-semibold">
-              Tổng chi tiêu phòng: {formatCurrency(expensesData.room_total_expense)}
-            </p>
-          </motion.div>
-        )}
+        {/* Loading */}
+        {loading && <div className="text-center py-12 text-gray-600">Đang tải dữ liệu...</div>}
 
-        {Array.isArray(expensesData?.member_stat) && expensesData.member_stat.length > 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2 className="text-2xl font-semibold text-green-800 mb-4">Chi Tiêu Của Các Thành Viên</h2>
-            <div className="space-y-4">
-              {expensesData.member_stat.map((member, index) => (
-                <Link
-                  to={`/member-expense-details?member_id=${member.Member_Id}&name=${member.Member_name}`}
-                  key={index}
-                  className="flex justify-between items-center p-4 bg-gray-100 rounded-lg hover:bg-gray-200 transition cursor-pointer no-underline"
-                >
-                  <p className="text-lg font-medium text-gray-800">{member.Member_name}</p>
-                  <p className="text-lg text-gray-800">{formatCurrency(member.Money)}</p>
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-        ) : (
-          !loading && (
-            <p className="text-center text-gray-600">Không có dữ liệu chi tiêu thành viên.</p>
-          )
+        {/* Data */}
+        {!loading && expensesData && (
+          <div className="space-y-6">
+            {expensesData.room_total_expense !== undefined && (
+              <div className="bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-xl p-6 text-center">
+                <h2 className="text-lg font-medium mb-2">Tổng chi tiêu phòng</h2>
+                <p className="text-3xl font-bold">{formatCurrency(expensesData.room_total_expense)}</p>
+              </div>
+            )}
+
+            {Array.isArray(expensesData.member_stat) && expensesData.member_stat.length > 0 ? (
+              <div className="grid gap-4">
+                {expensesData.member_stat.map((member) => (
+                  <Link
+                    key={member.Member_Id}
+                    to={`/member-expense-details?member_id=${member.Member_Id}&name=${encodeURIComponent(member.Member_name)}`}
+                    className="flex justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100"
+                  >
+                    <span>{member.Member_name}</span>
+                    <span>{formatCurrency(member.Money)}</span>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              !loading && <div className="text-center py-12 text-gray-600">Chưa có chi tiêu nào.</div>
+            )}
+          </div>
         )}
       </div>
     </div>

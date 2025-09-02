@@ -1,38 +1,44 @@
-// src/pages/HomePage.js
-
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginSuccess, logout, setUser, checkAuth } from "../../features/auth/authSlice.js";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-import { googleLogin, authenticateToken, fetchUserData } from "../../features/auth/authAPI.js"; 
-import { authSelector } from "../../features/auth/authSlice.js"; // Import the authSelector
+import { useAppDispatch, useAppSelector } from "../../app/store"; 
+import { loginSuccess, logout } from "../../app/authSlice"; 
+import { getCurrentUser } from "../../api/user"; 
+import axios from "axios";
 
 const HomePage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated, token, user } = useSelector(authSelector);
 
-  // Trigger checkAuth to verify if the user is already authenticated on app load
-  useEffect(() => {
-    dispatch(checkAuth()); // Check if there's a valid token in localStorage
-  }, [dispatch]);
+  // ✅ read from auth slice
+  const { isAuthenticated, token } = useAppSelector((state) => state.auth);
 
-  // Google login button
-  const handleGoogleLogin = () => {
-    googleLogin();
+  // Google login button → redirect to backend OAuth URL
+  const handleGoogleLogin = async () => {
+    try {
+      window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/public/google/login`;
+    } catch (err) {
+      console.error("❌ Google login redirect failed:", err);
+    }
   };
 
-  // Get token from URL, save to redux + localStorage, then fetch user
+  // Handle token from URL or localStorage
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get("token");
-    const storedToken = localStorage.getItem('oauthstate');
+    const storedToken = localStorage.getItem("token");
 
     const fetchUser = async (authToken) => {
       try {
-        const userData = await fetchUserData(authToken);
-        dispatch(setUser(userData));
+        // use axios instance (can add interceptors later)
+        const instance = axios.create();
+        const userData = await getCurrentUser(instance, authToken);
+        console.log("✅ User fetched:", userData);
+
+        // Save user to Redux
+        dispatch(loginSuccess(authToken));
+        localStorage.setItem("token", authToken);
+
         navigate("/rooms");
       } catch (err) {
         console.error("❌ Failed to fetch user:", err);
@@ -40,9 +46,9 @@ const HomePage = () => {
     };
 
     if (tokenFromUrl) {
-      dispatch(loginSuccess({ token: tokenFromUrl }));
-      authenticateToken(tokenFromUrl);
       fetchUser(tokenFromUrl);
+
+      // clean URL
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (storedToken && !token) {
       fetchUser(storedToken);
@@ -52,13 +58,18 @@ const HomePage = () => {
   return (
     <div className="h-screen w-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-purple-100">
       <div className="text-center max-w-md px-6 space-y-8">
-        {isAuthenticated && user ? (
+        {isAuthenticated ? (
           <>
-            <h1 className="text-3xl font-bold text-gray-800">Welcome, {user?.name}!</h1>
-            <p className="text-md text-gray-600">You're successfully logged in 🎉</p>
+            <h1 className="text-3xl font-bold text-gray-800">
+              🎉 Welcome back!
+            </h1>
+            <p className="text-md text-gray-600">
+              You're successfully logged in.
+            </p>
             <button
               onClick={() => {
                 dispatch(logout());
+                localStorage.removeItem("token");
                 navigate("/");
               }}
               className="mt-4 px-4 py-2 bg-red-500 text-white rounded shadow hover:bg-red-600"
@@ -69,10 +80,10 @@ const HomePage = () => {
         ) : (
           <>
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
-              CHÀO AE 703 NHÁ, BẢNG TEST CHO CÓ ĐỘNG LỰC LÀM TIẾP
+              CHÀO AE 703 NHÁ 🚀
             </h1>
             <p className="text-md sm:text-lg text-gray-600">
-              Track shared room expenses, split bills, and stay financially transparent with your roommates.
+              Track shared room expenses, split bills, and stay transparent with your roommates.
             </p>
             <button
               onClick={handleGoogleLogin}
