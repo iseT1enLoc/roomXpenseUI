@@ -13,7 +13,7 @@ const RoomList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-
+  const [showModal, setShowModal] = useState(false);
   // Redux state
   const rooms = useSelector(selectRooms);
   const loading = useSelector(selectRoomsLoading);
@@ -109,19 +109,42 @@ const RoomList = () => {
       }`}
     >
       <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl p-10 relative">
-        {/* Header with logout button */}
-        <div className="flex justify-between items-start mb-8">
-          <h1 className="text-4xl font-bold text-teal-800 flex items-center">
+      <div className="flex justify-between items-start mb-8">
+        <h1 className="text-4xl font-bold text-teal-800 flex items-center">
             <span className="mr-3 text-4xl">💰</span>
             Your Rooms
-          </h1>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-black font-medium py-2 px-4 rounded-lg shadow transition-colors"
-          >
-            Logout
-          </button>
-        </div>
+        </h1>
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-red-500 hover:bg-red-600 text-black font-medium py-2 px-4 rounded-lg shadow transition-colors"
+        >
+          Logout
+        </button>
+
+        {/* Modal */}
+        {showModal && (
+          <div className="fixed inset-0 bg-gradient-to-br from-green-100 via-white to-teal-100 bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
+              <h2 className="text-xl font-bold mb-4">Confirm Logout</h2>
+              <p className="mb-6">Are you sure you want to logout?</p>
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-12 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 hover:bg-red-600 text-grey font-medium py-2 px-4 rounded-lg transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
         {/* Rooms grid or empty state */}
         {rooms && rooms.length > 0 ? (
