@@ -14,9 +14,10 @@ export const fetchGoogleOAuthUrl = createAsyncThunk(
   }
 );
 
+
 const initialState = {
   token: localStorage.getItem('oauthstate') || null,
-  isAuthenticated: !!localStorage.getItem('oauthstate'),
+  isAuthenticated: localStorage.getItem('oauthstate'),
   loading: false,
   error: null,
   googleOAuthUrl: null,
@@ -59,10 +60,8 @@ const authSlice = createSlice({
   },
 });
 
-// Export actions
 export const { loginSuccess, logout, clearToken } = authSlice.actions;
 
-// Selectors
 export const selectAuth = (state) => state.auth;
 export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;
 export const selectToken = (state) => state.auth.token;
@@ -70,5 +69,5 @@ export const selectGoogleOAuthUrl = (state) => state.auth.googleOAuthUrl;
 export const selectAuthLoading = (state) => state.auth.loading;
 export const selectAuthError = (state) => state.auth.error;
 
-// Export reducer
+
 export default authSlice.reducer;

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
-import { form } from 'framer-motion/client';
+import { fetchCurrentUser } from '../../api/user';
+import { addExpense } from '../../api/expense'
 
 const expenseOptions = [
   'Thùng nước',
@@ -13,7 +14,7 @@ const expenseOptions = [
 ];
 
 const SuccessPage = () => {
-  const { room_id } = useParams(); // NEW
+  const { room_id } = useParams(); 
   const location = useLocation();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ title: '', amount: '', number: 1, notes: '' });
@@ -22,50 +23,39 @@ const SuccessPage = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [showForm, setShowForm] = useState(false);
 
-  console.log("URL:", window.location.href);
-  console.log("Search Params:", window.location.search);
-  console.log("Token:", new URLSearchParams(window.location.search).get("token"));
-  console.log("userme url",`${import.meta.env.VITE_BACKEND_URL}/api/protected/user/me`);
-
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const urlToken = queryParams.get('token');
-    const storedToken = localStorage.getItem('oauthstate');
-  
-    if (urlToken && !storedToken) {
-      localStorage.setItem('oauthstate', urlToken);
-      navigate(location.pathname, { replace: true });
-    }
-  
-    const tokenToUse = storedToken || urlToken;
-    if (!tokenToUse) {
-      navigate('/', { replace: true });
-      return;
-    }
-  
-    axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/api/protected/user/me`, {
-        headers: { Authorization: `Bearer ${tokenToUse}` },
-      })
-      .then((res) => {
-        setCurrentUser(res.data);
-      })
-      .catch((err) => {
-        if (err.response?.status === 401) {
-          localStorage.removeItem('oauthstate'); // Optional: clear invalid token
-          navigate('/', { replace: true });
-        } else {
-          setError('Lỗi lấy thông tin người dùng.');
+      const getUser = async () => {
+        const queryParams = new URLSearchParams(location.search);
+        const urlToken = queryParams.get('token');
+        const storedToken = localStorage.getItem('oauthstate');
+
+        if (urlToken && !storedToken) {
+          localStorage.setItem('oauthstate', urlToken);
+          navigate(location.pathname, { replace: true });
+          return;
         }
-      });
+
+        const tokenToUse = storedToken || urlToken;
+        if (!tokenToUse) {
+          navigate('/', { replace: true });
+          return;
+        }
+
+        try {
+          const userData = await fetchCurrentUser(tokenToUse);
+          setCurrentUser(userData);
+        } catch (err) {
+          if (err.message === 'Unauthorized') {
+            navigate('/', { replace: true });
+          } else {
+            setError(err.message);
+          }
+        }
+      };
+
+    getUser();
   }, [location, navigate]);
-    const handleSendReport = () => {
-      if (!inputRoomId.trim()) {
-        alert("Please enter a Room ID.");
-        return;
-      }
-      navigate(`/send-report/${inputRoomId}`);
-    };
+
   const formatCurrency = (amount) => {
     const num = parseInt(amount, 10);
     if (isNaN(num)) return '';
@@ -79,34 +69,22 @@ const SuccessPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.title || formData.amount<0 || isNaN(formData.amount)||formData.number<0) {
-      setError('Vui lòng điền đầy đủ và hợp lệ các trường.');
-      return;
-    }
-
     const token = localStorage.getItem('oauthstate');
-    if (!token) {
-      setError('Không có token xác thực.');
-      return;
-    }
 
     try {
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/protected/expense`,
-        {
-          room_id,
-          title: formData.title,
-          amount: parseFloat(formData.amount),
-          notes: formData.notes,
-          quantity: parseInt(formData.number) || 1,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await addExpense({
+        token,
+        room_id,
+        title: formData.title,
+        amount: formData.amount,
+        notes: formData.notes,
+        quantity: formData.number,
+      });
 
       setSuccessMessage('Thêm khoản chi thành công!');
       setError('');
@@ -116,19 +94,13 @@ const SuccessPage = () => {
         setSuccessMessage('');
         setShowForm(false);
       }, 200);
+
     } catch (err) {
-      console.error(err);
-      setError('Lỗi khi thêm khoản chi. Vui lòng thử lại.');
+      setError(err.message || 'Lỗi khi thêm khoản chi. Vui lòng thử lại.');
     }
   };
-  // const handleLogout = () => {
-  //   // Remove the token from localStorage
-  //   localStorage.removeItem('oauthstate');
-    
-  //   setTimeout(() => {
-  //     navigate('/');
-  //   }, 100); // slight delay
-  // };
+
+
   return (
     <div className="w-screen h-screen bg-gradient-to-br from-green-100 via-white to-teal-100 flex items-center justify-center">
       <div className="w-full max-w-3xl bg-white rounded-xl shadow-xl p-8 mx-4 space-y-8">
@@ -253,16 +225,6 @@ const SuccessPage = () => {
             </motion.form>
           )}
         </AnimatePresence>
-        {/* Logout Button */}
-        {/* <div className="mt-6 text-center">
-          <button
-            onClick={handleLogout}
-            className="px-6 py-3 bg-red-600 text-black rounded-full hover:bg-red-700 shadow-md transition transform hover:scale-105"
-          >
-            Đăng xuất
-          </button>
-        </div> */}
-        {/* Organized Buttons */}
         <div className="flex flex-col md:flex-row md:justify-center items-center gap-4 mt-6">
           <Link
             to={`/room-expense-details/${room_id}`}

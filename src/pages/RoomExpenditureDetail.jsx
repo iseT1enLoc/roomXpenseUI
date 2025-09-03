@@ -48,7 +48,6 @@ const RoomExpenditureDetails = () => {
 
     dispatch(fetchUserExpenses({params: params, token: token}))
     setLoading(false);
-    console.log("use effect on update")
   }, [selectedDay, selectedMonth, selectedYear]);
 
   // Handler to validate input for year, month, and day
@@ -70,16 +69,6 @@ const RoomExpenditureDetails = () => {
     const value = e.target.value;
     if (value >= 1 && value <= 31) {
       setSelectedDay(value);
-    }
-  };
-
-  // Function to validate quantity and money inputs for "Thêm khoản chi"
-  const handleAddExpense = (quantity, money) => {
-    if (quantity < 0 || money < 0) {
-      setWarning('Số lượng và tiền không thể âm.');
-    } else {
-      setWarning('');
-      // Proceed with adding the expense
     }
   };
 

@@ -3,8 +3,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getCurrentUser, updateUser } from '../api/user';
 import { getRooms } from '../api/roomService';
 
-// --- Async Thunks ---
-
 // Get the logged-in user profile
 export const fetchCurrentUser = createAsyncThunk(
   'user/fetchCurrentUser',
@@ -36,9 +34,8 @@ export const fetchRooms = createAsyncThunk(
   'user/fetchRooms',
   async ({ token } = {}, { rejectWithValue }) => {
     try {
-      //if (!token) token = localStorage.getItem('oauthstate'); // fallback token
       const data = await getRooms(token);
-      // Ensure data is always an array
+
       return Array.isArray(data) ? data : data.rooms || [];
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -119,10 +116,8 @@ const userSlice = createSlice({
   },
 });
 
-// --- Actions ---
 export const { clearUser } = userSlice.actions;
 
-// --- Selectors ---
 export const selectUser = (state) => state.user.profile;
 export const selectUserLoading = (state) => state.user.loading;
 export const selectUserError = (state) => state.user.error;
@@ -132,5 +127,4 @@ export const selectRooms = (state) => state.user.rooms;
 export const selectRoomsLoading = (state) => state.user.roomsLoading;
 export const selectRoomsError = (state) => state.user.roomsError;
 
-// --- Reducer ---
 export default userSlice.reducer;

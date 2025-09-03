@@ -12,6 +12,18 @@ export const fetchUserExpenses = createAsyncThunk(
     }
   }
 );
+export const fetchUserDetailExpenses = createAsyncThunk(
+  'expenses/fetchUserDetailExpense',
+  async ({ params, token }, { rejectWithValue }) => {
+    try {
+      const response = await getUserExpenses(params, token);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch expenses');
+    }
+  }
+);
+
 
 const expenseSlice = createSlice({
   name: 'expense',

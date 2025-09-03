@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { createExpense } from '../api/expense'; // Import your API function for creating an expense
+import { addExpense } from '../../api/expense'; // Import your API function for creating an expense
 
 const AddPaymentForm = ({ onCancel }) => {
   const [formData, setFormData] = useState({
@@ -12,9 +12,8 @@ const AddPaymentForm = ({ onCancel }) => {
 
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const navigate = useNavigate();
 
-  const room_id = "3a8d661e-5589-4148-8627-728ba624fe2f"; // Hardcoded room_id, can be dynamic
+  const room_id = "5621d051-2916-4520-bc81-5b40279e9a23"; // Hardcoded room_id, can be dynamic
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,33 +32,30 @@ const AddPaymentForm = ({ onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validation: Ensure amount is valid and title is provided
-    if (!formData.title || !formData.amount || isNaN(formData.amount)) {
-      setError('Input không hợp lệ');
-      return;
-    }
+
+    const token = localStorage.getItem('oauthstate');
 
     try {
-      // Call the API to create an expense, passing necessary data
-      await createExpense({
-        room_id,        // The room_id for the expense
-        title: formData.title,  // Title of the expense
-        amount: parseFloat(formData.amount),  // Convert amount to float
-        notes: formData.notes   // Optional notes for the expense
+      await addExpense({
+        token,
+        room_id,
+        title: formData.title,
+        amount: formData.amount,
+        notes: formData.notes,
+        quantity: formData.number,
       });
 
-      // On success, show success message and reset form
       setSuccessMessage('Thêm khoản chi thành công!');
       setError('');
-      setFormData({ title: '', amount: '', notes: '' });
+      setFormData({ title: '', amount: '', number: 1, notes: '' });
 
-      // Navigate back after a short delay
-      setTimeout(() => navigate('/successpage'), 3000);
+      setTimeout(() => {
+        setSuccessMessage('');
+        setShowForm(false);
+      }, 200);
+
     } catch (err) {
-      // Handle errors
-      setError('Thêm khoản chi thất bại. Vui lòng thử lại.');
-      setSuccessMessage('');
+      setError(err.message || 'Lỗi khi thêm khoản chi. Vui lòng thử lại.');
     }
   };
 

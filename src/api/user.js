@@ -1,3 +1,4 @@
+import axios from "axios";
 export const updateUser = async (token, user, instance) => {
     try {
       const res = await instance.put(`${import.meta.env.VITE_BACKEND_URL}/api/protected/user/${user.id}`, user, {
@@ -32,4 +33,29 @@ export const getCurrentUser = async (instance, token) => {
       }
     }
 };
-  
+
+
+
+export const fetchCurrentUser = async (token) => {
+  if (!token) throw new Error('No token provided');
+
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/api/protected/user/me`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data; // return user data
+  } catch (err) {
+    if (err.response?.status === 401) {
+      // Invalid token
+      localStorage.removeItem('oauthstate');
+      throw new Error('Unauthorized');
+    } else {
+      throw new Error(err);
+    }
+  }
+};
+
+    

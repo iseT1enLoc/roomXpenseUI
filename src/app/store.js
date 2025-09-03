@@ -74,14 +74,11 @@ const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
 });
 
-// Persistor
 const persistor = persistStore(store);
 
-// Infer types automatically (if you ever switch to TS)
 export const RootState = store.getState;
 export const AppDispatch = store.dispatch;
 
-// Custom hooks for React components
 export const useAppDispatch = () => useDispatch();
 export const useAppSelector = useSelector;
 

@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_BACKEND_URL
 
-// Helper function to get the token from localStorage
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
   return {
@@ -12,8 +11,27 @@ const getAuthHeaders = () => {
   };
 };
 
-export const createExpense = async (expenseData) => {
-  return axios.post(`${API_BASE}/api/protected/expense`, expenseData, getAuthHeaders());
+export const addExpense = async ({ token, room_id, title, amount, notes, quantity }) => {
+  if (!token) throw new Error('Không có token xác thực.');
+  if (!title || amount < 0 || isNaN(amount) || quantity < 0) {
+    throw new Error('Vui lòng điền đầy đủ và hợp lệ các trường.');
+  }
+
+  const response = await axios.post(
+    `${import.meta.env.VITE_BACKEND_URL}/api/protected/expense`,
+    {
+      room_id,
+      title,
+      amount: parseFloat(amount),
+      notes,
+      quantity: parseInt(quantity) || 1,
+    },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  return response.data;
 };
 
 export const getUserExpenses = async (params,token) => {

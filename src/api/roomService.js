@@ -1,14 +1,6 @@
 import axios from "axios";
 
 const API_BASE = import.meta.env.VITE_BACKEND_URL
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('oauthstate');
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-};
 
 export const getRooms = async (token) => {
   try {
