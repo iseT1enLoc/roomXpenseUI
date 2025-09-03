@@ -29,7 +29,6 @@ const RoomList = () => {
     const urlToken = queryParams.get("token");
     const storedToken = localStorage.getItem("oauthstate");
 
-    // If URL has token but storage doesn't, save it
     if (urlToken && !storedToken) {
       localStorage.setItem("oauthstate", urlToken);
       navigate(location.pathname, { replace: true });
@@ -66,7 +65,7 @@ const RoomList = () => {
     setIsLoggingOut(true);
     
     // Navigate after brief delay for animation
-    setTimeout(() => navigate("/", { replace: true }), 200);
+    setTimeout(() => navigate("/", { replace: true }), 500);
   };
 
   const getRoomIcon = () => "💰";

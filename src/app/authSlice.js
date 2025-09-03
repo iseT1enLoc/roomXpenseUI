@@ -29,17 +29,17 @@ const authSlice = createSlice({
     loginSuccess: (state, action) => {
       state.token = action.payload;
       state.isAuthenticated = true;
-      localStorage.setItem('token', action.payload);
+      localStorage.setItem('oauthstate', action.payload);
     },
     logout: (state) => {
       state.token = null;
       state.isAuthenticated = false;
-      localStorage.removeItem('token');
+      localStorage.removeItem('oauthstate');
     },
     clearToken: (state) => {
       state.token = null;
       state.isAuthenticated = false;
-      localStorage.removeItem('token'); // 🔑 Clear only token
+      localStorage.removeItem('oauthstate'); // 🔑 Clear only token
     },
   },
   extraReducers: (builder) => {

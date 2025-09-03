@@ -10,7 +10,6 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // ✅ read from auth slice
   const { isAuthenticated, token } = useAppSelector((state) => state.auth);
 
   // Google login button → redirect to backend OAuth URL
