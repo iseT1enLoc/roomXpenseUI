@@ -16,10 +16,10 @@ function App() {
   const [isAuthenticated, setAuthenticate] = useState(false)
  
   useEffect(() => {
-    const token = localStorage.getItem("oauthstate")
-    if(token){
-      setAuthenticate(true)
-    }
+    // const token = localStorage.getItem("oauthstate")
+    // if(token){
+    //   setAuthenticate(true)
+    // }
   }, []);
 
   return (
@@ -31,7 +31,7 @@ function App() {
         />
         <Route path="/room/:room_id" element={<SuccessPage />} />
         <Route path="/rooms" element={<RoomList />} />
-        <Route path="/send-report/:room_id" element={isAuthenticated ? <SendExpenditurePage /> : <HomePage />} />
+        <Route path="/send-report/:room_id" element={<SendExpenditurePage />} />
         <Route path="/room-expense-details/:room_id" element={<RoomExpenditureDetails />} />
         <Route path="/member-expense-details" element={<MemberExpenseDetails />} />
       </Routes>
