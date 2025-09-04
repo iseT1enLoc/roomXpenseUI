@@ -25,7 +25,7 @@ const HomePage = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get("token");
-    const storedToken = localStorage.getItem("token");
+    const storedToken = localStorage.getItem("oauthstate");
 
     const fetchUser = async (authToken) => {
       try {
@@ -36,7 +36,7 @@ const HomePage = () => {
 
         // Save user to Redux
         dispatch(loginSuccess(authToken));
-        localStorage.setItem("token", authToken);
+        localStorage.setItem("oauthstate", authToken);
 
         navigate("/rooms");
       } catch (err) {
@@ -57,27 +57,6 @@ const HomePage = () => {
   return (
     <div className="h-screen w-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-purple-100">
       <div className="text-center max-w-md px-6 space-y-8">
-        {isAuthenticated ? (
-          <>
-            <h1 className="text-3xl font-bold text-gray-800">
-              🎉 Welcome back!
-            </h1>
-            <p className="text-md text-gray-600">
-              You're successfully logged in.
-            </p>
-            <button
-              onClick={() => {
-                dispatch(logout());
-                localStorage.removeItem("token");
-                navigate("/");
-              }}
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded shadow hover:bg-red-600"
-            >
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
               CHÀO AE 703 NHÁ 🚀
             </h1>
@@ -91,8 +70,6 @@ const HomePage = () => {
               <FcGoogle className="text-2xl" />
               Continue with Google
             </button>
-          </>
-        )}
       </div>
     </div>
   );

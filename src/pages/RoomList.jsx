@@ -35,12 +35,6 @@ const RoomList = () => {
       return;
     }
 
-    // If no token anywhere, redirect to login
-    if (!urlToken && !storedToken) {
-      if (location.pathname !== "/") navigate("/", { replace: true });
-      return;
-    }
-
     // Set current user and fetch rooms
     const tokenToUse = storedToken || urlToken;
     setCurrentUser({ token: tokenToUse });
