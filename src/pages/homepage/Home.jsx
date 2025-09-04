@@ -26,7 +26,7 @@ const HomePage = () => {
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get("token");
     const storedToken = localStorage.getItem("oauthstate");
-
+    
     const fetchUser = async (authToken) => {
       try {
         // use axios instance (can add interceptors later)
@@ -43,7 +43,10 @@ const HomePage = () => {
         console.error("❌ Failed to fetch user:", err);
       }
     };
-
+    if(tokenFromUrl||storedToken){
+      navigate("/rooms", { replace: true })
+      //setTimeout(() => navigate("/rooms", { replace: true }), 500);
+    }
     if (tokenFromUrl) {
       fetchUser(tokenFromUrl);
 
