@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
 import { fetchCurrentUser } from '../../api/user';
 import { addExpense } from '../../api/expense'
 
@@ -225,29 +224,31 @@ const SuccessPage = () => {
             </motion.form>
           )}
         </AnimatePresence>
-        <div className="flex flex-col md:flex-row md:justify-center items-center gap-4 mt-6">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mt-8">
           <Link
             to={`/room-expense-details/${room_id}`}
-            className="px-6 py-3 bg-white text-black rounded-full hover:bg-teal-600 shadow-md transition transform hover:scale-105"
+            className="w-full sm:w-auto px-6 py-3 bg-white text-black rounded-full hover:bg-teal-600 shadow-md transition transform hover:scale-105 text-center"
           >
             Xem chi tiết chi tiêu
           </Link>
+
           {currentUser && currentUser.data.name === 'Loc Nguyen' && (
-          <Link
-            to={`/send-report/${room_id}`}
-            className="px-6 py-3 bg-white text-black rounded-full hover:bg-purple-600 shadow-md transition transform hover:scale-105"
-          >
-            Gửi email report
-          </Link>
-        )}
+            <Link
+              to={`/send-report/${room_id}`}
+              className="w-full sm:w-auto px-6 py-3 bg-white text-black rounded-full hover:bg-purple-600 shadow-md transition transform hover:scale-105 text-center"
+            >
+              Gửi email report
+            </Link>
+          )}
 
           <button
             onClick={() => navigate('/rooms')}
-            className="px-6 py-3 bg-gray-500 text-black rounded-full hover:bg-gray-600 shadow-md transition transform hover:scale-105"
+            className="w-full sm:w-auto px-6 py-3 bg-gray-500 text-black rounded-full hover:bg-gray-600 shadow-md transition transform hover:scale-105"
           >
             Quay lại danh sách phòng
           </button>
         </div>
+
       </div>
     </div>
   );

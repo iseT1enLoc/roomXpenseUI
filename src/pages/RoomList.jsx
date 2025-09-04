@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { 
   fetchRooms, 
-  clearUser,
   selectRooms, 
   selectRoomsLoading, 
   selectRoomsError 
