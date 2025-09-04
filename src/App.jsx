@@ -16,12 +16,11 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage/>}/>
-      
+        <Route path="/rooms" element={<RoomList />} />
 
         <Route element={<ProtectedRoutes/>}>
-            {/* <Route path="/" element={<Navigate to="/rooms"/>} /> */}
             <Route path="/room/:room_id" element={<SuccessPage />} />
-            <Route path="/rooms" element={<RoomList />} />
+            
             <Route path="/send-report/:room_id" element={<SendExpenditurePage />} />
             <Route path="/room-expense-details/:room_id" element={<RoomExpenditureDetails />} />
             <Route path="/member-expense-details" element={<MemberExpenseDetails />} />

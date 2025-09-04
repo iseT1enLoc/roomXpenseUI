@@ -10,7 +10,6 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { isAuthenticated, token } = useAppSelector((state) => state.auth);
 
   // Google login button → redirect to backend OAuth URL
   const handleGoogleLogin = async () => {
@@ -20,43 +19,6 @@ const HomePage = () => {
       console.error("❌ Google login redirect failed:", err);
     }
   };
-
-  // Handle token from URL or localStorage
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tokenFromUrl = params.get("token");
-    const storedToken = localStorage.getItem("oauthstate");
-    
-    const fetchUser = async (authToken) => {
-      try {
-        // use axios instance (can add interceptors later)
-        const instance = axios.create();
-        const userData = await getCurrentUser(instance, authToken);
-        console.log("✅ User fetched:", userData);
-
-        // Save user to Redux
-        dispatch(loginSuccess(authToken));
-        localStorage.setItem("oauthstate", authToken);
-
-        navigate("/rooms");
-      } catch (err) {
-        console.error("❌ Failed to fetch user:", err);
-      }
-    };
-    if(tokenFromUrl||storedToken){
-      navigate("/rooms", { replace: true })
-      //setTimeout(() => navigate("/rooms", { replace: true }), 500);
-    }
-    if (tokenFromUrl) {
-      fetchUser(tokenFromUrl);
-
-      // clean URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (storedToken && !token) {
-      fetchUser(storedToken);
-    }
-  }, [dispatch, navigate, token]);
-
   return (
     <div className="h-screen w-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-purple-100">
       <div className="text-center max-w-md px-6 space-y-8">

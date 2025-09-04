@@ -8,6 +8,8 @@ import {
   selectRoomsLoading, 
   selectRoomsError 
 } from "../app/userSlice";
+import { loginSuccess, logout } from "../app/authSlice";
+import { useAppSelector } from "../app/store";
 
 const RoomList = () => {
   const navigate = useNavigate();
@@ -19,6 +21,7 @@ const RoomList = () => {
   const loading = useSelector(selectRoomsLoading);
   const roomError = useSelector(selectRoomsError);
 
+  const { isAuthenticated, token } = useAppSelector((state) => state.auth);
   // Local state
   const [currentUser, setCurrentUser] = useState(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -52,10 +55,27 @@ const RoomList = () => {
   const handleRoomSelect = (roomId) => {
     navigate(`/room/${roomId}`);
   };
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tokenFromUrl = params.get("token");
+    const storedToken = localStorage.getItem("oauthstate");
 
+    const saveAuth = (authToken) => {
+      dispatch(loginSuccess(authToken));
+      localStorage.setItem("oauthstate", authToken);
+
+      window.history.replaceState({}, document.title, window.location.pathname);
+    };
+
+    if (tokenFromUrl) {
+      saveAuth(tokenFromUrl);
+    } else if (storedToken && !token) {
+      saveAuth(storedToken);
+    }
+  }, [dispatch, navigate, token]);
   const handleLogout = () => {
     // Clear Redux state
-    dispatch(clearUser());
+    dispatch(logout());
     
     // Clear localStorage
     localStorage.removeItem("oauthstate");

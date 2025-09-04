@@ -16,8 +16,8 @@ export const fetchGoogleOAuthUrl = createAsyncThunk(
 
 
 const initialState = {
-  token: localStorage.getItem('oauthstate') || null,
-  isAuthenticated: localStorage.getItem('oauthstate'),
+  token: localStorage.getItem('oauthstate'),
+  isAuthenticated: !!localStorage.getItem('oauthstate'),
   loading: false,
   error: null,
   googleOAuthUrl: null,
@@ -30,6 +30,7 @@ const authSlice = createSlice({
     loginSuccess: (state, action) => {
       state.token = action.payload;
       state.isAuthenticated = true;
+      console.log("ENTER LOGIN SUCCESS")
       localStorage.setItem('oauthstate', action.payload);
     },
     logout: (state) => {
