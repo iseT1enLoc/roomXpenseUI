@@ -41,7 +41,7 @@ const authSlice = createSlice({
     clearToken: (state) => {
       state.token = null;
       state.isAuthenticated = false;
-      localStorage.removeItem('oauthstate'); // 🔑 Clear only token
+      localStorage.removeItem('oauthstate'); 
     },
   },
   extraReducers: (builder) => {

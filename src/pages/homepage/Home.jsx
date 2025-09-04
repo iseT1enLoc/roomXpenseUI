@@ -2,16 +2,12 @@ import React, { useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/store"; 
-import { loginSuccess, logout } from "../../app/authSlice"; 
-import { getCurrentUser } from "../../api/user"; 
-import axios from "axios";
-
+import { selectIsAuthenticated } from "../../app/authSlice";
 const HomePage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
-
-  // Google login button → redirect to backend OAuth URL
   const handleGoogleLogin = async () => {
     try {
       window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/public/google/login`;
@@ -19,6 +15,12 @@ const HomePage = () => {
       console.error("❌ Google login redirect failed:", err);
     }
   };
+
+  useEffect(() => {
+    if(isAuthenticated){
+      navigate("/rooms", { replace: true })
+    }
+  }, []);
   return (
     <div className="h-screen w-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-purple-100">
       <div className="text-center max-w-md px-6 space-y-8">

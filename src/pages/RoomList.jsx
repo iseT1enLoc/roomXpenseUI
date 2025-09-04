@@ -85,7 +85,7 @@ const RoomList = () => {
     setIsLoggingOut(true);
     
     // // Navigate after brief delay for animation
-    setTimeout(() => navigate("/", { replace: true }), 500);
+    setTimeout(() => navigate("/", { replace: true }), 100);
   };
 
   const getRoomIcon = () => "💰";
