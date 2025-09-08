@@ -6,9 +6,10 @@ import {
   selectRooms, 
   selectRoomsLoading, 
   selectRoomsError 
-} from "../app/userSlice";
-import { loginSuccess, logout } from "../app/authSlice";
-import { useAppSelector } from "../app/store";
+} from "../../app/userSlice";
+import { loginSuccess, logout } from "../../app/authSlice";
+import { useAppSelector } from "../../app/store";
+import { Button } from "@mui/material";
 
 const RoomList = () => {
   const navigate = useNavigate();
@@ -110,7 +111,7 @@ const RoomList = () => {
           <h2 className="text-2xl font-bold mb-2">Oops! Something went wrong</h2>
           <p className="text-lg mb-6">Error: {roomError}</p>
           <button
-            onClick={() => dispatch(fetchRooms({ token: currentUser?.token }))}
+            onClick={() => localStorage.removeItem("oauthstate")}
             className="bg-teal-500 hover:bg-teal-600 text-white font-medium py-2 px-6 rounded-lg shadow transition"
           >
             Try Again
@@ -214,12 +215,12 @@ const RoomList = () => {
             <p className="text-gray-600 mb-6">
               You haven't joined any rooms yet. Create or join one to get started!
             </p>
-            <button
-              onClick={() => navigate("/create-room")} // Adjust path as needed
-              className="bg-teal-500 hover:bg-teal-600 text-white font-medium py-3 px-6 rounded-lg shadow transition-colors"
-            >
-              Create Your First Room
-            </button>
+            <Button variant="contained"
+                    onClick={() => {
+                               
+                    }}color="primary">
+                Tạo phòng
+            </Button>
           </div>
         )}
 

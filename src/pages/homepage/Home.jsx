@@ -175,14 +175,6 @@ const HomePage = () => {
           </div>
         </footer>
       </div>
-
-      {/* Floating Abstract Shapes */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-10 w-4 h-4 bg-blue-400/30 rounded-full animate-bounce" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/3 right-20 w-3 h-3 bg-purple-400/30 rounded-full animate-bounce" style={{animationDelay: '2s'}}></div>
-        <div className="absolute bottom-1/3 left-1/4 w-2 h-2 bg-pink-400/30 rounded-full animate-bounce" style={{animationDelay: '3s'}}></div>
-        <div className="absolute bottom-1/4 right-10 w-3 h-3 bg-indigo-400/30 rounded-full animate-bounce" style={{animationDelay: '4s'}}></div>
-      </div>
     </div>
   );
 };

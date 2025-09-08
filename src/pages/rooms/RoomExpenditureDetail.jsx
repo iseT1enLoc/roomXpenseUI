@@ -5,9 +5,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserExpenses, selectMemStats } from '../app/expenseSlice';
+import { fetchUserExpenses, selectMemStats } from '../../app/expenseSlice';
 
-import { useAppDispatch, useAppSelector } from "../app/store"; 
+import { useAppDispatch, useAppSelector } from "../../app/store"; 
 import { Button } from '@mui/material';
 
 const RoomExpenditureDetails = () => {
