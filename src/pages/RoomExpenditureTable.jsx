@@ -16,7 +16,7 @@ const ExpenseTable = () => {
     year: '',
     search: ''
   });
-  const [sortBy, setSortBy] = useState('created_at');
+  const [sortBy, setSortBy] = useState('used_date');
   const [sortOrder, setSortOrder] = useState('desc');
 
   // Format currency
@@ -79,21 +79,21 @@ const ExpenseTable = () => {
 
   // Extract unique years, months, days from current expenses
   const filterOptions = {
-    years: [...new Set(expenses.map(e => new Date(e.created_at).getFullYear()))].sort((a, b) => b - a),
-    months: [...new Set(expenses.map(e => new Date(e.created_at).getMonth() + 1))].sort((a, b) => a - b),
-    days: [...new Set(expenses.map(e => new Date(e.created_at).getDate()))].sort((a, b) => a - b)
+    years: [...new Set(expenses.map(e => new Date(e.used_date).getFullYear()))].sort((a, b) => b - a),
+    months: [...new Set(expenses.map(e => new Date(e.used_date).getMonth() + 1))].sort((a, b) => a - b),
+    days: [...new Set(expenses.map(e => new Date(e.used_date).getDate()))].sort((a, b) => a - b)
   };
 
   // Sort client-side
   const sortedExpenses = [...expenses].sort((a, b) => {
     const aValue =
       sortBy === 'amount' ? a[sortBy] :
-      sortBy === 'created_at' ? new Date(a[sortBy]) :
+      sortBy === 'used_date' ? new Date(a[sortBy]) :
       a[sortBy]?.toString().toLowerCase() || '';
 
     const bValue =
       sortBy === 'amount' ? b[sortBy] :
-      sortBy === 'created_at' ? new Date(b[sortBy]) :
+      sortBy === 'used_date' ? new Date(b[sortBy]) :
       b[sortBy]?.toString().toLowerCase() || '';
 
     if (sortOrder === 'asc') return aValue > bValue ? 1 : -1;
@@ -225,6 +225,9 @@ const ExpenseTable = () => {
                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                         Ghi chú
                     </th>
+                    <th className="px-4 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider cursor-pointer">
+                        Ngày dùng khoản chi tiêu này
+                    </th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider cursor-pointer">
                         Ngày tạo
                     </th>
@@ -264,6 +267,7 @@ const ExpenseTable = () => {
                             {formatCurrency(expense.amount)}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-700">{expense.notes}</td>
+                        <td className="px-4 py-3 text-sm text-gray-700">{formatDate(expense.used_date)}</td>
                         <td className="px-4 py-3 text-sm text-gray-700">{formatDate(expense.created_at)}</td>
                         </tr>
                     ))

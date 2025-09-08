@@ -4,7 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fetchCurrentUser } from '../../api/user';
 import { addExpense } from '../../api/expense'
 import Button from '@mui/material/Button'
-
+import { Calendar } from 'lucide-react';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import viLocale from 'date-fns/locale/vi';
+import TextField from '@mui/material/TextField';
 const expenseOptions = [
   'Thùng nước',
   'Tiền điện',
@@ -17,7 +21,7 @@ const SuccessPage = () => {
   const { room_id } = useParams(); 
   const location = useLocation();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ title: '', amount: '', number: 1, notes: '' });
+  const [formData, setFormData] = useState({ title: '', amount: '', number: 1, notes: '',usedDate: new Date()});
   const [currentUser, setCurrentUser] = useState(null);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -70,25 +74,34 @@ const SuccessPage = () => {
   };
 
 
-
+  const formatDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem('oauthstate');
 
     try {
+      console.log(formData.usedDate)
       await addExpense({
         token,
         room_id,
         title: formData.title,
         amount: formData.amount,
         notes: formData.notes,
+        used_date:formData.usedDate ? formData.usedDate.toISOString() : null,
         quantity: formData.number,
       });
 
       setSuccessMessage('Thêm khoản chi thành công!');
       setError('');
-      setFormData({ title: '', amount: '', number: 1, notes: '' });
+       setFormData({ title: '', amount: '', number: 1, notes: '', usedDate: new Date() });
 
       setTimeout(() => {
         setSuccessMessage('');
@@ -193,7 +206,35 @@ const SuccessPage = () => {
                   className="w-full px-5 py-3 border rounded-lg shadow-sm text-lg"
                 />
               </div>
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Ngày sử dụng
+                </label>
+                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
+                    <DatePicker
+                      label="Chọn ngày"
+                      minDate={new Date("2020-01-01")}
+                      maxDate={new Date("2030-12-31")}
+                      value={formData.usedDate}
+                      onChange={(newValue) => {
+                        if (newValue instanceof Date && !isNaN(newValue)) {
+                          setFormData(prev => ({ ...prev, usedDate: newValue }));
+                        }
+                      }}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          className: "px-4 py-3 border rounded-lg shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-green-400",
+                          required: true
+                        }
+                      }}
+                    />
+                </LocalizationProvider>
 
+                <p className="mt-2 text-gray-600">
+                  Ngày chọn: {formatDate(formData.usedDate)}
+                </p>
+              </div>
               <div>
                 <label className="block text-lg font-medium text-gray-700 mb-2">Ghi chú</label>
                 <textarea
