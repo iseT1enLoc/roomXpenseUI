@@ -11,6 +11,9 @@ import { loginSuccess, logout } from "../../app/authSlice";
 import { useAppSelector } from "../../app/store";
 import { Button } from "@mui/material";
 import { refreshToken } from "../../api/authService";
+import FormDialog from "../../component/CreateRoomForm";
+import { createNewRoom } from "../../api/roomService";
+import toast, { Toaster } from "react-hot-toast";
 const RoomList = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,9 +55,10 @@ const RoomList = () => {
     dispatch(fetchRooms({ token: tokenToUse }));
   }, [location, navigate, dispatch]);
 
-  const handleRoomSelect = (roomId) => {
-    navigate(`/room/${roomId}`);
+  const handleRoomSelect = (roomId, room_name) => {
+    navigate(`/room/${roomId}/${encodeURIComponent(room_name)}`);
   };
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get("token");
@@ -113,6 +117,21 @@ const RoomList = () => {
       navigate("/");
     }
   };
+  const handleOnSubmitCreateRoom = async (room_name) => {
+    const token = localStorage.getItem("oauthstate");
+    try {
+      const response = await createNewRoom(room_name, token);
+      console.log("Room created:", response.data);
+
+      // ✅ refresh rooms
+      dispatch(fetchRooms({ token }));
+      toast.success("Room created successfully! 🎉");
+
+    } catch (error) {
+      console.error("Failed to create room:", error);
+      toast.error("Failed to create room. Please try again.");
+    }
+  };
   const getRoomIcon = () => "💰";
 
   // Loading state
@@ -159,12 +178,10 @@ const RoomList = () => {
             <span className="mr-3 text-4xl">💰</span>
             Your Rooms
         </h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-red-500 hover:bg-red-600 text-black font-medium py-2 px-4 rounded-lg shadow transition-colors"
-        >
+        <FormDialog onSubmit={handleOnSubmitCreateRoom}/>
+        <Button variant="contained" color="outlined" onClick={() => setShowModal(true)}>
           Logout
-        </button>
+        </Button>
 
         {/* Modal */}
         {showModal && (
@@ -197,7 +214,7 @@ const RoomList = () => {
             {rooms.map((room) => (
               <div
                 key={room.room_id || room.id}
-                onClick={() => handleRoomSelect(room.room_id || room.id)}
+                onClick={() => handleRoomSelect(room.room_id || room.id, room.room_name)}
                 className="bg-white border border-gray-200 rounded-2xl p-6 shadow-md hover:shadow-xl transform hover:scale-105 transition-all cursor-pointer group"
               >
                 <div className="flex items-start justify-between mb-4">
@@ -248,7 +265,7 @@ const RoomList = () => {
             </Button>
           </div>
         )}
-
+      <Toaster position="top-right" />
       </div>
     </div>
   );

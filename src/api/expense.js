@@ -2,14 +2,6 @@ import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_BACKEND_URL
 
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('oathstate');
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-};
 
 export const addExpense = async ({ token, room_id, title, amount, notes, quantity,used_date }) => {
   if (!token) throw new Error('Không có token xác thực.');
@@ -52,22 +44,36 @@ export const getUserExpenses = async (params,token) => {
   }
 };
 
-export const calculateMonthlyExpense = async () => {
-  return axios.get(`${API_BASE}/expense/calc`, getAuthHeaders());
-};
 export const getMemberExpenseDetails = async(token,params)=>{
   try{
-    const response = await axios.get(`${API_BASE}/api/protected/expense/members?room_id=5621d051-2916-4520-bc81-5b40279e9a23`, {
+    const response = await axios.get(`${API_BASE}/api/protected/expense/members?room_id=${params.room_id}`, {
       params,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    //console.log(response.data);
     return response.data;    
   }catch(error){
     console.error('Fail to get user data', error);
     throw error;    
   }
-
 }
+export const getAMemberExpenseDetails = async (token, { user_id, room_id, year, month, day }) => {
+  try {
+    const params = { user_id, room_id, year };
+    if (month) params.month = month;
+    if (day) params.day = day;
+
+    const res = await axios.get(baseUrl, {
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
+};

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, ChevronDown } from 'lucide-react';
 import { getMemberExpenseDetails } from '../../api/expense';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -18,7 +18,8 @@ const ExpenseTable = () => {
   });
   const [sortBy, setSortBy] = useState('used_date');
   const [sortOrder, setSortOrder] = useState('desc');
-
+  const { room_id } = useParams()
+  console.log("Room ID:", room_id);
   // Format currency
   const formatCurrency = (amount) =>
     new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
@@ -45,8 +46,11 @@ const ExpenseTable = () => {
         year: filters.year,
         month: filters.month,
         day: filters.day,
-        search: filters.search
-      });
+        search: filters.search,
+        room_id:room_id
+      },
+
+    );
 
       setExpenses(Array.isArray(data) ? data : data?.data || []);
     } catch (err) {
@@ -59,18 +63,11 @@ const ExpenseTable = () => {
 
   useEffect(() => {
     fetchExpenses();
-  }, [filters]);
+  }, [filters.year, filters.month, filters.day, filters.search, room_id]);
 
   const handleFilterChange = (key, value) => setFilters((prev) => ({ ...prev, [key]: value }));
   const clearFilters = () => setFilters({ day: '', month: '', year: '', search: '' });
 
-  const handleSort = (column) => {
-    if (sortBy === column) setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    else {
-      setSortBy(column);
-      setSortOrder('desc');
-    }
-  };
 
   const monthNames = [
     'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
@@ -119,7 +116,7 @@ const ExpenseTable = () => {
       <div className="max-w-7xl mx-auto">
         <button
           onClick={() => navigation(-1)}
-          className="absolute top-4 left-4 flex items-center text-green-700 hover:text-green-900 bg-gradient-to-br from-green-100 via-white to-teal-100 bg-cover"
+          className="absolute top-4 left-4 flex items-center text-green-700 hover:text-green-900"
         >
           <ArrowLeft className="mr-2" />
           <span className="font-medium">Quay lại</span>
@@ -182,6 +179,7 @@ const ExpenseTable = () => {
             </button>
           </div>
         </div>
+        {/* Card */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         {Object.entries(memberSummary).map(([username, info]) => (
             <Link

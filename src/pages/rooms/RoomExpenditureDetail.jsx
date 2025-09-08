@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
@@ -17,11 +17,10 @@ const RoomExpenditureDetails = () => {
   const [selectedDay, setSelectedDay] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const [warning, setWarning] = useState(''); 
+
   const dispatch = useAppDispatch();
   
-  const { room_id } = useParams();
-  
+
 
   const formatCurrency = (amount) => {
     const num = parseInt(amount, 10);
@@ -33,7 +32,7 @@ const RoomExpenditureDetails = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('oauthstate');
-
+    console.log("Room ID:", room_id);
     if (!token) {
       setError('Không có token xác thực. Vui lòng đăng nhập lại.');
       setLoading(false);
@@ -97,7 +96,6 @@ const RoomExpenditureDetails = () => {
 
         {loading && <p className="text-center text-gray-500">Đang tải dữ liệu...</p>}
         {error && <p className="text-red-500 text-center">{error}</p>}
-        {warning && <p className="text-yellow-500 text-center">{warning}</p>} {/* Display warning */}
 
         {/* Filter Section */}
         <div className="flex justify-center space-x-4 mb-8">
@@ -159,7 +157,6 @@ const RoomExpenditureDetails = () => {
             </p>
           </motion.div>
         )}
-        <Button onClick={navigation}></Button>
         {Array.isArray(expensesData?.member_stat) && expensesData.member_stat.length > 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
