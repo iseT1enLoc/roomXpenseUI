@@ -11,7 +11,7 @@ const getAuthHeaders = () => {
   };
 };
 
-export const addExpense = async ({ token, room_id, title, amount, notes, quantity }) => {
+export const addExpense = async ({ token, room_id, title, amount, notes, quantity,used_date }) => {
   if (!token) throw new Error('Không có token xác thực.');
   if (!title || amount < 0 || isNaN(amount) || quantity < 0) {
     throw new Error('Vui lòng điền đầy đủ và hợp lệ các trường.');
@@ -25,6 +25,7 @@ export const addExpense = async ({ token, room_id, title, amount, notes, quantit
       amount: parseFloat(amount),
       notes,
       quantity: parseInt(quantity) || 1,
+      used_date:used_date
     },
     {
       headers: { Authorization: `Bearer ${token}` },
