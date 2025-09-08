@@ -32,13 +32,13 @@ export default function FormDialog({onSubmit}) {
   return (
     <React.Fragment>
       <Button variant="outlined" onClick={handleClickOpen}>
-        Create new room
+       Tạo phòng
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Enter your room name</DialogTitle>
+        <DialogTitle>Nhập tên phòng</DialogTitle>
         <DialogContent>
           <DialogContentText>
-           Please enter room name to continue the process
+           Hãy nhập tên phòng để tiếp tục sử dụng
           </DialogContentText>
           <form onSubmit={handleSubmit} id="subscription-form">
             <TextField
@@ -47,7 +47,7 @@ export default function FormDialog({onSubmit}) {
               margin="dense"
               id="name"
               name="email"
-              label="Room name"
+              label="Tên phòng"
               type="text"
               fullWidth
               variant="standard"
@@ -57,7 +57,7 @@ export default function FormDialog({onSubmit}) {
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button type="submit" form="subscription-form">
-            Create room
+            Tạo phòng
           </Button>
         </DialogActions>
       </Dialog>

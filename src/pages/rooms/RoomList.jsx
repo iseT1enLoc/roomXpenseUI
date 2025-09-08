@@ -257,12 +257,7 @@ const RoomList = () => {
             <p className="text-gray-600 mb-6">
               You haven't joined any rooms yet. Create or join one to get started!
             </p>
-            <Button variant="contained"
-                    onClick={() => {
-                               
-                    }}color="primary">
-                Tạo phòng
-            </Button>
+            <FormDialog onSubmit={handleOnSubmitCreateRoom}/>
           </div>
         )}
       <Toaster position="top-right" />
