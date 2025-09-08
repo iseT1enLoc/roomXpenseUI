@@ -54,3 +54,19 @@ export const getUserExpenses = async (params,token) => {
 export const calculateMonthlyExpense = async () => {
   return axios.get(`${API_BASE}/expense/calc`, getAuthHeaders());
 };
+export const getMemberExpenseDetails = async(token,params)=>{
+  try{
+    const response = await axios.get(`${API_BASE}/api/protected/expense/members?room_id=5621d051-2916-4520-bc81-5b40279e9a23`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    //console.log(response.data);
+    return response.data;    
+  }catch(error){
+    console.error('Fail to get user data', error);
+    throw error;    
+  }
+
+}

@@ -3,6 +3,7 @@ import { useLocation, useNavigate, Link, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchCurrentUser } from '../../api/user';
 import { addExpense } from '../../api/expense'
+import Button from '@mui/material/Button'
 
 const expenseOptions = [
   'Thùng nước',
@@ -225,28 +226,26 @@ const SuccessPage = () => {
           )}
         </AnimatePresence>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mt-8">
-          <Link
-            to={`/room-expense-details/${room_id}`}
-            className="w-full sm:w-auto px-6 py-3 bg-white text-black rounded-full hover:bg-teal-600 shadow-md transition transform hover:scale-105 text-center"
-          >
+          <Button variant="contained"
+                  onClick={() => {
+                   navigate(`/room-expense-details/${room_id}`)
+                  }}color="primary">
             Xem chi tiết chi tiêu
-          </Link>
-
+          </Button>
           {currentUser && currentUser.data.name === 'Loc Nguyen' && (
-            <Link
-              to={`/send-report/${room_id}`}
-              className="w-full sm:w-auto px-6 py-3 bg-white text-black rounded-full hover:bg-purple-600 shadow-md transition transform hover:scale-105 text-center"
-            >
-              Gửi email report
-            </Link>
+          <Button variant="contained"
+                  onClick={() => {
+                   navigate(`/send-report/${room_id}`)
+                  }}color="primary">
+            Gửi email report
+          </Button>
           )}
-
-          <button
-            onClick={() => navigate('/rooms')}
-            className="w-full sm:w-auto px-6 py-3 bg-gray-500 text-black rounded-full hover:bg-gray-600 shadow-md transition transform hover:scale-105"
-          >
+          <Button variant="contained"
+                  onClick={() => {
+                   navigate('/rooms')
+                  }}color="primary">
             Quay lại danh sách phòng
-          </button>
+          </Button>
         </div>
 
       </div>

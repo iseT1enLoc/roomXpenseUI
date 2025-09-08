@@ -24,20 +24,6 @@ const HomePage = () => {
     setIsVisible(true);
   }, [isAuthenticated, navigate]);
 
-  const features = [
-    {
-      title: "Smart Splitting",
-      description: "Automatically divide expenses fairly among roommates"
-    },
-    {
-      title: "Real-time Tracking",
-      description: "Monitor shared costs and balances instantly"
-    },
-    {
-      title: "Secure & Private",
-      description: "Your financial data is protected and encrypted"
-    }
-  ];
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-green-100 via-white to-teal-100 relative overflow-hidden">
@@ -171,19 +157,6 @@ const HomePage = () => {
                 <p className="text-sm text-gray-500 mt-4 text-center opacity-80 hover:opacity-100 transition-opacity">Secure • Free • No fees</p>
               </div>
             </div>
-
-            {/* Features Grid */}
-            {/* <div className={`grid md:grid-cols-3 gap-8 max-w-4xl mx-auto transform transition-all duration-1000 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-              {features.map((feature, index) => (
-                <div key={index} className="group p-6 bg-white/40 backdrop-blur-sm rounded-3xl border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <div className="w-6 h-6 bg-white rounded-lg"></div>
-                  </div>
-                  <h3 className="font-bold text-xl text-gray-800 mb-2">{feature.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-                </div>
-              ))}
-            </div> */}
           </div>
         </main>
 

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getUserExpenses } from '../api/expense';
+import { getMemberExpenseDetails, getUserExpenses } from '../api/expense';
+import { param } from 'framer-motion/client';
 
 export const fetchUserExpenses = createAsyncThunk(
   'expenses/fetchUserExpenses',
@@ -24,7 +25,6 @@ export const fetchUserDetailExpenses = createAsyncThunk(
   }
 );
 
-
 const expenseSlice = createSlice({
   name: 'expense',
   initialState: {
@@ -43,6 +43,11 @@ const expenseSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    fetchMemberExpenses: (state,action)=>{
+      state.memstats = action.payload;
+      state.loading=false;
+      state.error=true;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -58,7 +63,7 @@ const expenseSlice = createSlice({
         console.log(action.payload);
         state.loading = false;
         state.error = action.payload;
-      });
+      })
   },
 });
 export const selectMemStats = (state) => state.expense.memstats;

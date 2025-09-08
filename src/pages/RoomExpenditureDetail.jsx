@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserExpenses, selectMemStats } from '../app/expenseSlice';
 
 import { useAppDispatch, useAppSelector } from "../app/store"; 
+import { Button } from '@mui/material';
 
 const RoomExpenditureDetails = () => {
   const expensesData = useSelector(selectMemStats);
@@ -18,7 +19,7 @@ const RoomExpenditureDetails = () => {
   const [loading, setLoading] = useState(true);
   const [warning, setWarning] = useState(''); 
   const dispatch = useAppDispatch();
-
+  
   const { room_id } = useParams();
   
 
@@ -158,7 +159,7 @@ const RoomExpenditureDetails = () => {
             </p>
           </motion.div>
         )}
-
+        <Button onClick={navigation}></Button>
         {Array.isArray(expensesData?.member_stat) && expensesData.member_stat.length > 0 ? (
           <motion.div
             initial={{ opacity: 0 }}

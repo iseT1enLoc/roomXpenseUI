@@ -10,6 +10,7 @@ import SendExpenditurePage from "./pages/email/Email";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import { selectIsAuthenticated } from "./app/authSlice";
 import { useSelector } from "react-redux";
+import ExpenseTable from "./pages/RoomExpenditureTable";
 function App() {
   const isAuthenticated = useSelector(selectIsAuthenticated)
   return (
@@ -22,8 +23,9 @@ function App() {
             <Route path="/room/:room_id" element={<SuccessPage />} />
             
             <Route path="/send-report/:room_id" element={<SendExpenditurePage />} />
-            <Route path="/room-expense-details/:room_id" element={<RoomExpenditureDetails />} />
+            
             <Route path="/member-expense-details" element={<MemberExpenseDetails />} />
+            <Route path="/room-expense-details/:room_id" element={<ExpenseTable />} />
         </Route>
         <Route path="*" element={<HomePage/>}/>
       </Routes>
