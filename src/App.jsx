@@ -1,18 +1,14 @@
 // export default App;
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route,BrowserRouter } from "react-router-dom";
 import HomePage from "./pages/homepage/Home";
 import SuccessPage from "./pages/mainpage/SuccessLoginPage";
-import RoomExpenditureDetails from "./pages/RoomExpenditureDetail";
-import MemberExpenseDetails from "./pages/MemberExpenseDetails";
-import RoomList from "./pages/RoomList";
+import MemberExpenseDetails from "./pages/rooms/MemberExpenseDetails"
+import RoomList from "./pages/rooms/RoomList";
 import SendExpenditurePage from "./pages/email/Email";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
-import { selectIsAuthenticated } from "./app/authSlice";
-import { useSelector } from "react-redux";
-import ExpenseTable from "./pages/RoomExpenditureTable";
+import ExpenseTable from "./pages/rooms/RoomExpenditureTable";
 function App() {
-  const isAuthenticated = useSelector(selectIsAuthenticated)
   return (
     <BrowserRouter>
       <Routes>

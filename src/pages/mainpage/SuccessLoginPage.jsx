@@ -4,11 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fetchCurrentUser } from '../../api/user';
 import { addExpense } from '../../api/expense'
 import Button from '@mui/material/Button'
-import { Calendar } from 'lucide-react';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import viLocale from 'date-fns/locale/vi';
-import TextField from '@mui/material/TextField';
+
 const expenseOptions = [
   'Thùng nước',
   'Tiền điện',
@@ -101,7 +100,7 @@ const SuccessPage = () => {
 
       setSuccessMessage('Thêm khoản chi thành công!');
       setError('');
-       setFormData({ title: '', amount: '', number: 1, notes: '', usedDate: new Date() });
+      setFormData({ title: '', amount: '', number: 1, notes: '', usedDate: new Date() });
 
       setTimeout(() => {
         setSuccessMessage('');
@@ -129,7 +128,7 @@ const SuccessPage = () => {
         {currentUser && (
           <div className="text-center text-lg">
             <p className="text-gray-700 font-medium">Xin chào, {currentUser.data.name}</p>
-            <p className="text-gray-600">Email: {currentUser.data.email}</p>
+            {/* <p className="text-gray-600">Email: {currentUser.data.email}</p> */}
           </div>
         )}
 
@@ -208,7 +207,7 @@ const SuccessPage = () => {
               </div>
               <div>
                 <label className="block text-lg font-medium text-gray-700 mb-2">
-                  Ngày sử dụng
+                  Ngày dùng khoản chi tiêu này
                 </label>
                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
                     <DatePicker

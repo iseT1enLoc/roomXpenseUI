@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, ChevronDown } from 'lucide-react';
-import { getMemberExpenseDetails } from '../api/expense';
+import { getMemberExpenseDetails } from '../../api/expense';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@mui/material';
@@ -119,7 +119,7 @@ const ExpenseTable = () => {
       <div className="max-w-7xl mx-auto">
         <button
           onClick={() => navigation(-1)}
-          className="absolute top-4 left-4 flex items-center text-green-700 hover:text-green-900"
+          className="absolute top-4 left-4 flex items-center text-green-700 hover:text-green-900 bg-gradient-to-br from-green-100 via-white to-teal-100 bg-cover"
         >
           <ArrowLeft className="mr-2" />
           <span className="font-medium">Quay lại</span>
