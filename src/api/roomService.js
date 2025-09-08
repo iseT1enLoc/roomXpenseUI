@@ -18,3 +18,22 @@ export const getRooms = async (token) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const createNewRoom = async (room_name, token) => {
+  console.log("Enter create new room call api");
+  try {
+    const response = await axios.post(
+      `${API_BASE}/api/protected/room/create`,
+      { room_name }, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error creating a new room", error);
+    throw error.response?.data || error.message;
+  }
+};

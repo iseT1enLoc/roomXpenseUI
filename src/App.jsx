@@ -8,6 +8,7 @@ import RoomList from "./pages/rooms/RoomList";
 import SendExpenditurePage from "./pages/email/Email";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import ExpenseTable from "./pages/rooms/RoomExpenditureTable";
+
 function App() {
   return (
     <BrowserRouter>
@@ -16,7 +17,7 @@ function App() {
         <Route path="/rooms" element={<RoomList />} />
 
         <Route element={<ProtectedRoutes/>}>
-            <Route path="/room/:room_id" element={<SuccessPage />} />
+            <Route path="/room/:room_id/:room_name" element={<SuccessPage />} />
             
             <Route path="/send-report/:room_id" element={<SendExpenditurePage />} />
             
@@ -25,7 +26,6 @@ function App() {
         </Route>
         <Route path="*" element={<HomePage/>}/>
       </Routes>
-      
     </BrowserRouter>
   );
 }

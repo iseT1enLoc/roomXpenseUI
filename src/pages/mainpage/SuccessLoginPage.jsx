@@ -17,7 +17,7 @@ const expenseOptions = [
 ];
 
 const SuccessPage = () => {
-  const { room_id } = useParams(); 
+  const { room_id, room_name } = useParams(); 
   const location = useLocation();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ title: '', amount: '', number: 1, notes: '',usedDate: new Date()});
@@ -122,7 +122,7 @@ const SuccessPage = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
         >
-          Tiền phòng 703
+          Tiền phòng {room_name}
         </motion.h1>
 
         {currentUser && (

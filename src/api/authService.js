@@ -13,14 +13,6 @@ export const getGoogleOAuthUrl = async () => {
   }
 };
 
-export const storeAuthToken = (token) => {
-  localStorage.setItem('oauthstate', token); 
-};
-
-
-export const getAuthToken = () => {
-  return localStorage.getItem('oauthstate');
-};
 export const refreshToken = async (oldToken) => {
   try {
     const res = await axios.post(`${API_URL}/api/public/access_token`, {

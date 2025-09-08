@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Calendar, DollarSign, Clock, Search, Filter } from 'lucide-react';
-
+import { getMemberExpenseDetails } from '../../api/expense';
 const MemberExpenseDetails = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
