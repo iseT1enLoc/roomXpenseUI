@@ -21,3 +21,18 @@ export const storeAuthToken = (token) => {
 export const getAuthToken = () => {
   return localStorage.getItem('oauthstate');
 };
+export const refreshToken = async (oldToken) => {
+  try {
+    const res = await axios.post(`${API_URL}/api/public/access_token`, {
+      token: oldToken,
+    });
+
+    console.log("Refresh response:", res.data);
+
+    // Adjust based on your backend response shape
+    return res.data?.data?.token || null;
+  } catch (error) {
+    console.error("Axios error while refreshing token:", error);
+    throw error;
+  }
+};

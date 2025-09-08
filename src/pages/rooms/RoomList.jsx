@@ -10,7 +10,7 @@ import {
 import { loginSuccess, logout } from "../../app/authSlice";
 import { useAppSelector } from "../../app/store";
 import { Button } from "@mui/material";
-
+import { refreshToken } from "../../api/authService";
 const RoomList = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -87,7 +87,32 @@ const RoomList = () => {
     // // Navigate after brief delay for animation
     setTimeout(() => navigate("/", { replace: true }), 500);
   };
+  const handleRetry = async () => {
+    try {
+      const oldToken= localStorage.getItem("oauthstate");
 
+      if (!oldToken) {
+        throw new Error("No token available");
+      }
+
+      const newToken = await refreshToken(oldToken);
+
+      if (!newToken) {
+        throw new Error("No token returned from server");
+      }
+
+      // Save to Redux + localStorage
+      dispatch(loginSuccess(newToken));
+      localStorage.setItem("oauthstate", newToken);
+
+      // Retry fetching rooms with the new token
+      dispatch(fetchRooms({ token: newToken }));
+    } catch (err) {
+      console.error("Token refresh failed:", err);
+      localStorage.removeItem("oauthstate");
+      navigate("/");
+    }
+  };
   const getRoomIcon = () => "💰";
 
   // Loading state
@@ -111,10 +136,10 @@ const RoomList = () => {
           <h2 className="text-2xl font-bold mb-2">Oops! Something went wrong</h2>
           <p className="text-lg mb-6">Error: {roomError}</p>
           <button
-            onClick={() => localStorage.removeItem("oauthstate")}
-            className="bg-teal-500 hover:bg-teal-600 text-white font-medium py-2 px-6 rounded-lg shadow transition"
+            onClick={handleRetry}
+            className="bg-teal-500 hover:bg-teal-600 text-black font-medium py-2 px-6 rounded-lg shadow transition"
           >
-            Try Again
+            Try again
           </button>
         </div>
       </div>
