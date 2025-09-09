@@ -3,6 +3,7 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Calendar, DollarSign, Clock, Search, Filter } from 'lucide-react';
 import { getMemberExpenseDetails } from '../../api/expense';
+import LoadingComponent from '../../component/LoadingIcon';
 const MemberExpenseDetails = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -269,10 +270,7 @@ const MemberExpenseDetails = () => {
 
         {/* Loading and Error States */}
         {loading && (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-            <p className="mt-4 text-gray-500">Đang tải dữ liệu...</p>
-          </div>
+          <LoadingComponent message={"Đang tải dữ liệu..."}/>
         )}
         
         {error && (

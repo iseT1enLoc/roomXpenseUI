@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Filter, ChevronDown } from 'lucide-react';
+import { Filter, ChevronDown,ChevronRight } from 'lucide-react';
 import { getMemberExpenseDetails } from '../../api/expense';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@mui/material';
+
 import { Link } from 'react-router-dom';
+import BackButton from '../../component/BackButton';
 const ExpenseTable = () => {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -114,13 +114,7 @@ const ExpenseTable = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 via-white to-teal-100 bg-cover p-6">
       <div className="max-w-7xl mx-auto">
-        <button
-          onClick={() => navigation(-1)}
-          className="absolute top-4 left-4 flex items-center text-green-700 hover:text-green-900"
-        >
-          <ArrowLeft className="mr-2" />
-          <span className="font-medium">Quay lại</span>
-        </button>
+        <BackButton/>
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Quản lý Chi phí</h1>

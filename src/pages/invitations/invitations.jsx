@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getAllPendingInvitations, updateInvitationStatus } from "../../api/invitation";
 import LoadingComponent from "../../component/LoadingIcon";
+import InvitationCard from "../../component/InvitationCard";
 
 
 const Invitations = () => {
@@ -11,13 +12,11 @@ const Invitations = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [invitations, setInvitations] = useState([]);
-
+  const token = localStorage.getItem("oauthstate");
   async function fetchPendingInvitations() {
-    const token = localStorage.getItem("oauthstate");
-
     try {
       const res = await getAllPendingInvitations(token);
-      setInvitations(res.data); // <-- API returns inside `data`
+      setInvitations(res.data); 
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -25,8 +24,7 @@ const Invitations = () => {
     }
   }
 
-  async function handleUpdateInvitation(recipientId, status) {
-    const token = localStorage.getItem("oauthstate");
+  async function handleUpdateInvitation(recipientId, status) { 
     try {
       await updateInvitationStatus(recipientId, status,token);
       // Refresh invitations after update
@@ -65,63 +63,18 @@ const Invitations = () => {
 
         {/* Page Title */}
         <h1 className="text-3xl font-bold text-gray-800 mb-8">Invitations</h1>
-
-        {/* Invitations list */}
         <div className="flex flex-col gap-6">
-          {invitations.map((inv) => (
-            <div
-              key={inv.id}
-              className="w-full bg-white border border-teal-100 rounded-2xl shadow-md p-6 flex items-center justify-between hover:shadow-lg transition-all duration-300"
-            >
-              {/* Left side: Avatar + Info */}
-              <div className="flex items-center gap-4">
-                {/* Avatar (first letter of inviter name) */}
-                <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-green-400 text-white flex items-center justify-center rounded-full font-bold text-xl shadow-md">
-                  {inv.invitation?.FromUser?.name?.charAt(0) || "?"}
-                </div>
-
-                {/* Info */}
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-800">
-                    Room Invitation
-                  </h2>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium text-teal-600">
-                      {inv.invitation?.FromUser?.name || "Someone"}
-                    </span>{" "}
-                    has invited you to join{" "}
-                    <span className="font-medium text-teal-600">
-                      {inv.invitation?.Room?.room_name || "a room"}
-                    </span>
-                  </p>
-                  {/* Invitation message */}
-                  <p className="text-xs text-gray-500 mt-1 italic">
-                    "{inv.invitation?.invitation_message}"
-                  </p>
-                </div>
-              </div>
-
-              {/* Right side: Actions */}
-              <div className="flex gap-2">
-                <Button
-                  variant="contained"
-                  color="success"
-                  className="rounded-full px-6 shadow-sm"
-                  onClick={() => handleUpdateInvitation(inv.id, "accepted")}
-                >
-                  Accept
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  className="rounded-full px-6"
-                  onClick={() => handleUpdateInvitation(inv.id, "denied")}
-                >
-                  Deny
-                </Button>
-              </div>
-            </div>
-          ))}
+          {invitations.length === 0 ? (
+            <p className="text-center text-gray-500 text-lg">Chưa có lời mời nào 😔</p>
+          ) : (
+            invitations.map((inv) => (
+              <InvitationCard
+                key={inv.id} // always add a unique key!
+                invitation={inv}
+                onUpdate={handleUpdateInvitation}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>
