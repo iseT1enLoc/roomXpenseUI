@@ -19,9 +19,6 @@ const RoomExpenditureDetails = () => {
   const [loading, setLoading] = useState(true);
 
   const dispatch = useAppDispatch();
-  
-
-
   const formatCurrency = (amount) => {
     const num = parseInt(amount, 10);
     if (isNaN(num)) return '';
@@ -75,7 +72,6 @@ const RoomExpenditureDetails = () => {
   return (
     <div className="w-screen h-screen bg-gradient-to-br from-green-100 via-white to-teal-100 bg-cover flex items-center justify-center px-6 py-12">
       <div className="w-screen max-w-3xl bg-white rounded-xl shadow-xl p-8 space-y-8 relative">
-
         {/* Back Button */}
         <Link
           to={`/room/${room_id}`}
