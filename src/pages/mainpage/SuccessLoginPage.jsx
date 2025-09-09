@@ -7,6 +7,9 @@ import Button from '@mui/material/Button'
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import viLocale from 'date-fns/locale/vi';
+import SendInvitationForm from '../invitations/invitationForm';
+import Invitations from '../invitations/invitations';
+import InviteButton from '../../component/InvitationButton';
 
 const expenseOptions = [
   'Thùng nước',
@@ -128,7 +131,7 @@ const SuccessPage = () => {
         {currentUser && (
           <div className="text-center text-lg">
             <p className="text-gray-700 font-medium">Xin chào, {currentUser.data.name}</p>
-            {/* <p className="text-gray-600">Email: {currentUser.data.email}</p> */}
+            <p className="text-gray-600">Email: {currentUser.data.email}</p>
           </div>
         )}
 
@@ -209,6 +212,8 @@ const SuccessPage = () => {
                 <label className="block text-lg font-medium text-gray-700 mb-2">
                   Ngày dùng khoản chi tiêu này
                 </label>
+              
+                
                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
                     <DatePicker
                       label="Chọn ngày"
@@ -280,6 +285,9 @@ const SuccessPage = () => {
             Gửi email report
           </Button>
           )}
+          {currentUser && currentUser.data.name === 'Loc Nguyen' &&
+          <InviteButton room_id={room_id}/>
+          }
           <Button variant="contained"
                   onClick={() => {
                    navigate('/rooms')

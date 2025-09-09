@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, replace } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { 
   fetchRooms, 
@@ -14,6 +14,8 @@ import { refreshToken } from "../../api/authService";
 import FormDialog from "../../component/CreateRoomForm";
 import { createNewRoom } from "../../api/roomService";
 import toast, { Toaster } from "react-hot-toast";
+import LoadingComponent from "../../component/LoadingIcon";
+import ErrorComponent from "../../component/ErrorComponent";
 const RoomList = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -137,31 +139,14 @@ const RoomList = () => {
   // Loading state
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
-          <p className="text-lg text-gray-600">Loading rooms...</p>
-        </div>
-      </div>
+      <LoadingComponent message={"Loading room..."}/>
     );
   }
 
   // Error state
   if (roomError) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen text-red-500">
-        <div className="text-center max-w-md">
-          <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold mb-2">Oops! Something went wrong</h2>
-          <p className="text-lg mb-6">Error: {roomError}</p>
-          <button
-            onClick={handleRetry}
-            className="bg-teal-500 hover:bg-teal-600 text-black font-medium py-2 px-6 rounded-lg shadow transition"
-          >
-            Try again
-          </button>
-        </div>
-      </div>
+      <ErrorComponent handleRetry={handleRetry}/>
     );
   }
 
@@ -179,6 +164,9 @@ const RoomList = () => {
             Your Rooms
         </h1>
         <FormDialog onSubmit={handleOnSubmitCreateRoom}/>
+        <Button variant="contained" color="outlined" onClick={() =>{navigate("/rooms/invitations",replace)}}>
+          Invitations
+        </Button>
         <Button variant="contained" color="outlined" onClick={() => setShowModal(true)}>
           Logout
         </Button>
