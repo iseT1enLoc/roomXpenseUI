@@ -18,6 +18,7 @@ import LoadingComponent from "../../component/LoadingIcon";
 import { getAllPendingInvitations } from "../../api/invitation";
 import RoomCard from "../../component/RoomCard";
 import LogoutModal from "../../component/LogOutModal";
+import { fetchCurrentUser, getCurrentUser } from "../../api/user";
 
 const RoomList = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const RoomList = () => {
   const rooms = useSelector(selectRooms);
   const loading = useSelector(selectRoomsLoading);
   const roomError = useSelector(selectRoomsError);
-
+ 
   const { isAuthenticated, token } = useAppSelector((state) => state.auth);
   // Local state
   const [currentUser, setCurrentUser] = useState(null);
@@ -36,6 +37,19 @@ const RoomList = () => {
   const [invitations, setInvitations] = useState([]);
   const pendingInvitations = invitations?.length || 0; // your fetched invitations array
   const [accountMenuAnchor, setAccountMenuAnchor] = useState(null);
+  const fetchUser = async () => {
+    const storedToken = localStorage.getItem("oauthstate");
+    if (!storedToken) return;
+
+    try {
+      const userData = await fetchCurrentUser(storedToken);
+      console.log(userData);
+      setCurrentUser(userData);
+    } catch (err) {
+      console.error("Failed to fetch user:", err);
+      // Optionally redirect to login
+    }
+  };
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get("token");
@@ -57,6 +71,7 @@ const RoomList = () => {
   useEffect(() => {
     if (!token) return;
     fetchInvitations();
+    fetchUser();
   }, [token]);
   // Handle token & fetch rooms
   useEffect(() => {
@@ -191,7 +206,9 @@ const RoomList = () => {
               badgeContent={pendingInvitations > 0 ? pendingInvitations : null}
               overlap="circular"
             >
-              <Avatar sx={{ width: 36, height: 36 }}>L</Avatar>
+            <Avatar sx={{ width: 36, height: 36 }}>
+              {currentUser?.data?.name ? currentUser.data.name.charAt(0) : "?"}
+            </Avatar>
             </Badge>
           </IconButton>
 
