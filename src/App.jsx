@@ -8,6 +8,7 @@ import RoomList from "./pages/rooms/RoomList";
 import SendExpenditurePage from "./pages/email/Email";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import ExpenseTable from "./pages/rooms/RoomExpenditureTable";
+import Invitations from "./pages/invitations/invitations";
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
 
         <Route element={<ProtectedRoutes/>}>
             <Route path="/room/:room_id/:room_name" element={<SuccessPage />} />
-            
+            <Route path="/rooms/invitations" element={<Invitations />} />
             <Route path="/send-report/:room_id" element={<SendExpenditurePage />} />
             
             <Route path="/member-expense-details" element={<MemberExpenseDetails />} />
