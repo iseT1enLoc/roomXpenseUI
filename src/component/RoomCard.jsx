@@ -27,7 +27,7 @@ export default function RoomCard({ room, handleRoomSelect, getRoomIcon }) {
         {/* Created Info */}
         <Box display="flex" flexDirection="column" gap={0.5} mt={1}>
           <Typography variant="body2" color="text.secondary">
-            <strong>Created at:</strong> {room.created_at
+            <strong>Được tạo:</strong> {room.created_at
                                         ? new Date(room.created_at).toLocaleString(undefined, {
                                             year: 'numeric',
                                             month: 'short',

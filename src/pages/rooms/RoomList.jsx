@@ -157,17 +157,17 @@ const RoomList = () => {
     try {
       await createNewRoom(room_name, token);
       dispatch(fetchRooms({ token }));
-      toast.success("Room created successfully! 🎉");
+      toast.success("Tạo phòng thành công! 🎉");
 
     } catch (error) {
-      toast.error("Failed to create room. Please try again.");
+      toast.error("Tạo phòng thất bại. Xin hãy thử lại: ",error);
     }
   };
 
   // Loading state
   if (loading) {
     return (
-      <LoadingComponent message={"Fetching rooms..."}/>
+      <LoadingComponent message={"Đang tải dữ liệu..."}/>
     );
   }
 
@@ -190,7 +190,7 @@ const RoomList = () => {
         {/* Title */}
         <h1 className="text-4xl font-bold text-teal-800 flex items-center">
           <span className="mr-3 text-4xl">💰</span>
-          Your Rooms
+          Phòng của bạn
         </h1>
 
         {/* Actions */}
