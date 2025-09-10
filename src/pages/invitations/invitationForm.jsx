@@ -51,7 +51,7 @@ export default function SendInvitationModal({ roomId, open, onClose }) {
       setInputValue("");
       setMessage("");
     } catch (err) {
-      setError("Không thể gửi lời mời ❌");
+      setError("Lỗi xảy ra khi gửi lời mời: "+err.message);
     } finally {
       setLoading(false);
     }
@@ -79,7 +79,7 @@ export default function SendInvitationModal({ roomId, open, onClose }) {
           {/* Email list */}
           <div>
             <label className="block text-sm font-medium mb-1">
-              Email thành viên
+              Email thành viên (điều kiện là người được mời đã login hệ thống)
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
               {emails.map((email, idx) => (

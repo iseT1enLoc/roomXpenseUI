@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 
 export default function InvitationCard({ invitation, onUpdate }) {
+  
   return (
     <div
       className="w-full bg-white border border-teal-100 rounded-2xl shadow-md p-6 flex items-center justify-between hover:shadow-lg transition-all duration-300"

@@ -28,8 +28,13 @@ const Invitations = () => {
   async function handleUpdateInvitation(recipientId, status) { 
     try {
       await updateInvitationStatus(recipientId, status,token);
-      // Refresh invitations after update
+
       fetchPendingInvitations();
+      setTimeout(() => {
+        navigate(-1)
+      }, 200);
+      
+
     } catch (error) {
       console.error(error);
       setError(true);
