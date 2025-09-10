@@ -2,7 +2,7 @@
 import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 
-export default function LogoutModal({ open, onClose, onConfirm, title = "Confirm Logout", message = "Are you sure you want to logout?" }) {
+export default function LogoutModal({ open, onClose, onConfirm, title = "Xác nhận đăng xuất", message = "Bạn chắc chắn muốn đăng xuất?" }) {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
@@ -11,10 +11,10 @@ export default function LogoutModal({ open, onClose, onConfirm, title = "Confirm
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="inherit">
-          Cancel
+          Hủy bỏ
         </Button>
         <Button onClick={onConfirm} color="error" variant="contained">
-          Logout
+          Đăng xuất
         </Button>
       </DialogActions>
     </Dialog>
