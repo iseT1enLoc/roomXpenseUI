@@ -224,7 +224,7 @@ const RoomList = () => {
                 navigate("/rooms/invitations");
               }}
             >
-              Invitations
+              Lời mời vào phòng
               {pendingInvitations > 0 && (
                 <span className="ml-2 text-sm font-semibold text-red-500">
                   {pendingInvitations}
@@ -238,7 +238,7 @@ const RoomList = () => {
               }}
               sx={{ color: "red" }}
             >
-              Logout
+              Đăng xuất
             </MenuItem>
           </Menu>
         </Box>
