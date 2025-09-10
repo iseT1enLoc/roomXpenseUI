@@ -32,7 +32,7 @@ export default function FormDialog({onSubmit}) {
   return (
     <React.Fragment>
       <Button variant="outlined" onClick={handleClickOpen}>
-       Create room
+       Tạo phòng
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Nhập tên phòng</DialogTitle>

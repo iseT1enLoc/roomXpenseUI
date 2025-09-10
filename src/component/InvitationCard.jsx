@@ -15,13 +15,13 @@ export default function InvitationCard({ invitation, onUpdate }) {
         {/* Info */}
         <div>
           <h2 className="text-lg font-semibold text-gray-800">
-            Room Invitation
+            Mời vào phòng
           </h2>
           <p className="text-sm text-gray-600">
             <span className="font-medium text-teal-600">
               {invitation.invitation?.FromUser?.name || "Someone"}
             </span>{" "}
-            has invited you to join{" "}
+            vừa mời bạn tham gia phòng{" "}
             <span className="font-medium text-teal-600">
               {invitation.invitation?.Room?.room_name || "a room"}
             </span>
@@ -41,7 +41,7 @@ export default function InvitationCard({ invitation, onUpdate }) {
           className="rounded-full px-6 shadow-sm"
           onClick={() => onUpdate(invitation.id, "accepted")}
         >
-          Accept
+          Đồng ý
         </Button>
         <Button
           variant="outlined"
@@ -49,7 +49,7 @@ export default function InvitationCard({ invitation, onUpdate }) {
           className="rounded-full px-6"
           onClick={() => onUpdate(invitation.id, "denied")}
         >
-          Deny
+          Từ chối
         </Button>
       </div>
     </div>

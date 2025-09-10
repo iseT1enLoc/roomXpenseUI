@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getAllPendingInvitations, updateInvitationStatus } from "../../api/invitation";
 import LoadingComponent from "../../component/LoadingIcon";
 import InvitationCard from "../../component/InvitationCard";
+import BackButton from "../../component/BackButton";
 
 
 const Invitations = () => {
@@ -40,7 +41,7 @@ const Invitations = () => {
   }, []);
 
   if (loading) {
-    return <LoadingComponent message={"Fetching invitation..."} />;
+    return <LoadingComponent message={"Đang tải dữ liệu phòng..."} />;
   }
 
   if (error) {
@@ -51,18 +52,10 @@ const Invitations = () => {
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-teal-50 p-8">
       <div className="max-w-4xl mx-auto bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-10 relative">
         {/* Back button */}
-        <div className="flex justify-start mb-6">
-          <Button
-            variant="outlined"
-            className="rounded-full px-5"
-            onClick={() => navigate(-1)}
-          >
-            ← Back
-          </Button>
-        </div>
+        <BackButton/>
 
         {/* Page Title */}
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Invitations</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">Lời mời vào phòng</h1>
         <div className="flex flex-col gap-6">
           {invitations.length === 0 ? (
             <p className="text-center text-gray-500 text-lg">Chưa có lời mời nào 😔</p>
