@@ -78,7 +78,7 @@ export default function ExpenseModal({
           </div>
 
           <div>
-            <label className="block mb-1">Ngày dùng</label>
+            <label className="block mb-1">Thời gian chi khoản này</label>
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
               <DatePicker
                 value={formData.usedDate}
