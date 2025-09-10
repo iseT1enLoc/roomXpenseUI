@@ -140,7 +140,7 @@ const SuccessPage = () => {
             size="large"
             onClick={() => setShowForm(true)}
           >
-            Thêm khoản chi tiêu tháng này
+            Thêm khoản chi tiêu
           </Button>
         </div>    
         <ExpenseModal
