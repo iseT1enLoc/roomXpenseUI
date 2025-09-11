@@ -38,15 +38,15 @@ export default function RoomCard({ room, handleRoomSelect, getRoomIcon }) {
                                             })
                                         : "Unknown"}
           </Typography>
-          {/* <Typography variant="body2" color="text.secondary">
-            <strong>By:</strong> {room.createdBy || "Unknown"}
-          </Typography> */}
+          <Typography variant="body2" color="text.secondary">
+            <strong>Bởi:</strong> {room?.ByUser?.name || "Unknown"}
+          </Typography>
         </Box>
 
         {/* Member count */}
-        {room.memberCount && (
+        {room.member_count && (
           <Chip
-            label={`${room.memberCount} member${room.memberCount !== 1 ? 's' : ''}`}
+            label={`${room.member_count} thành viên`}
             size="small"
             color="primary"
             sx={{ mt: 1 }}
