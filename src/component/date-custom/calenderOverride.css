@@ -1,0 +1,50 @@
+/* Ghi đè tên các thứ bằng ::after */
+.MuiDayCalendar-weekDayLabel:nth-child(1)::after {
+	content: 'T2';
+}
+.MuiDayCalendar-weekDayLabel:nth-child(2)::after {
+	content: 'T3';
+}
+.MuiDayCalendar-weekDayLabel:nth-child(3)::after {
+	content: 'T4';
+}
+.MuiDayCalendar-weekDayLabel:nth-child(4)::after {
+	content: 'T5';
+}
+.MuiDayCalendar-weekDayLabel:nth-child(5)::after {
+	content: 'T6';
+}
+.MuiDayCalendar-weekDayLabel:nth-child(6)::after {
+	content: 'T7';
+}
+.MuiDayCalendar-weekDayLabel:nth-child(7)::after {
+	content: 'CN';
+}
+
+/* Ẩn chữ T gốc */
+.MuiDayCalendar-weekDayLabel {
+	color: transparent !important; /* ẩn chữ gốc */
+	position: relative;
+	font-size: 0 !important; /* ✅ ẩn hoàn toàn chữ T (ẩn layout luôn) */
+}
+
+/* Hiển thị chữ T2...CN */
+.MuiDayCalendar-weekDayLabel::after {
+	color: #000;
+	font-size: 0.75rem; /* cỡ chữ mới */
+	font-weight: 500;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Làm nổi bật Chủ nhật (CN) */
+.MuiDayCalendar-weekDayLabel:nth-child(7)::after {
+	color: red;
+	font-weight: 700;
+}
