@@ -26,7 +26,8 @@ export default function InputDatePicker({
 	textFieldProps = {},
 	openTo = 'day',
 	error = false,
-	helperText = ''
+	helperText = '',
+	disabled = false
 }) {
 	const [internalValue, setInternalValue] = useState(
 		defaultValue ? dayjs(defaultValue) : null
@@ -67,6 +68,7 @@ export default function InputDatePicker({
 				disablePast={disablePast}
 				disableFuture={disableFuture}
 				openTo={openTo}
+				disabled={disabled}
 				slots={{
 					openPickerIcon: CalendarMonth
 				}}
