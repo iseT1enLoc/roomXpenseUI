@@ -5,6 +5,7 @@ import 'dayjs/locale/vi'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { CalendarMonth } from '@mui/icons-material'
+import { Input, InputLabel } from '@mui/material'
 
 dayjs.locale('vi')
 
@@ -15,7 +16,7 @@ export default function InputDatePicker({
 	format = 'DD/MM/YYYY',
 	views = ['day', 'month', 'year'],
 	defaultValue = null,
-	size = 'small',
+	size = 'medium',
 	fullWidth = true,
 	required = false,
 	minDate,
@@ -23,7 +24,9 @@ export default function InputDatePicker({
 	disablePast = false,
 	disableFuture = false,
 	textFieldProps = {},
-	openTo = 'day'
+	openTo = 'day',
+	error = false,
+	helperText = ''
 }) {
 	const [internalValue, setInternalValue] = useState(
 		defaultValue ? dayjs(defaultValue) : null
@@ -72,6 +75,9 @@ export default function InputDatePicker({
 						size,
 						fullWidth,
 						required,
+						error,
+						helperText,
+						InputLabelProps: { required: true },
 						...textFieldProps,
 						sx: {
 							'& .MuiOutlinedInput-root': {

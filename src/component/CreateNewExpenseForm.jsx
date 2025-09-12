@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -16,6 +16,8 @@ export default function ExpenseModal({
 	formatCurrency,
 	formatDate
 }) {
+	const [errors, setErrors] = useState({})
+
 	const initialFormData = {
 		title: '',
 		amount: '',
@@ -27,12 +29,25 @@ export default function ExpenseModal({
 	useEffect(() => {
 		if (!open) {
 			setFormData(initialFormData)
+			setErrors({})
 		}
 	}, [open, setFormData])
 
 	const handleChange = (e) => {
 		const { name, value } = e.target
 		setFormData((prev) => ({ ...prev, [name]: value }))
+		setErrors((prev) => ({ ...prev, [name]: '' }))
+	}
+
+	const validateForm = () => {
+		const newErrors = {}
+		if (!formData.title) newErrors.title = 'Vui lòng chọn khoản chi'
+		if (!formData.amount) newErrors.amount = 'Vui lòng nhập số tiền'
+		else if (isNaN(formData.amount)) newErrors.amount = 'Số tiền phải là số'
+		if (!formData.usedDate) newErrors.usedDate = 'Vui lòng chọn ngày'
+
+		setErrors(newErrors)
+		return Object.keys(newErrors).length === 0
 	}
 
 	return (
@@ -62,7 +77,9 @@ export default function ExpenseModal({
 				<form
 					onSubmit={(e) => {
 						e.preventDefault()
-						handleSubmit()
+						if (validateForm()) {
+							handleSubmit()
+						}
 					}}
 					className="space-y-4"
 				>
@@ -73,8 +90,10 @@ export default function ExpenseModal({
 							value={formData.title}
 							onChange={handleChange}
 							options={expenseOptions}
-							required
+							error={!!errors.title}
+							helperText={errors.title}
 							placeholder="-- Chọn khoản chi --"
+							InputLabelProps={{ required: true }}
 						/>
 					</div>
 
@@ -84,8 +103,10 @@ export default function ExpenseModal({
 							name="amount"
 							value={formData.amount}
 							onChange={handleChange}
-							required
+							error={!!errors.amount}
+							helperText={errors.amount}
 							placeholder="Nhập số tiền"
+							InputLabelProps={{ required: true }}
 						/>
 						{formData.amount && !isNaN(formData.amount) && (
 							<p className="text-gray-600 mt-1">
@@ -100,11 +121,14 @@ export default function ExpenseModal({
 							value={formData.usedDate}
 							views={['month', 'year', 'day']}
 							openTo="day"
-							onChange={(newValue) =>
+							onChange={(newValue) => {
 								setFormData((prev) => ({ ...prev, usedDate: newValue }))
-							}
-							required
+								setErrors((prev) => ({ ...prev, usedDate: '' }))
+							}}
+							error={!!errors.usedDate}
+							helperText={errors.usedDate}
 							fullWidth
+							InputLabelProps={{ required: true }}
 						/>
 						{formData.usedDate && (
 							<p className="text-gray-600 mt-1">
