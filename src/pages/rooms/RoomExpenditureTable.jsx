@@ -209,9 +209,9 @@ const ExpenseTable = () => {
 									<th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
 										Người tạo
 									</th>
-									<th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
+									{/* <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
 										Số lượng
-									</th>
+									</th> */}
 									<th className="px-4 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">
 										Số tiền
 									</th>
@@ -259,9 +259,9 @@ const ExpenseTable = () => {
 											<td className="px-4 py-3 text-sm text-gray-700">
 												{expense.username}
 											</td>
-											<td className="px-4 py-3 text-center text-sm text-gray-700">
+											{/* <td className="px-4 py-3 text-center text-sm text-gray-700">
 												{expense.quantity}
-											</td>
+											</td> */}
 											<td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
 												{formatCurrency(expense.amount)}
 											</td>
