@@ -12,7 +12,8 @@ export default function InputDropdown({
 	className = '',
 	fullWidth = true,
 	size = 'medium',
-	variant = 'outlined'
+	variant = 'outlined',
+	...rest
 }) {
 	return (
 		<TextField
@@ -31,6 +32,7 @@ export default function InputDropdown({
 					borderRadius: '8px'
 				}
 			}}
+			{...rest}
 		>
 			<MenuItem value="">{placeholder}</MenuItem>
 			{options.map((option, idx) => {
