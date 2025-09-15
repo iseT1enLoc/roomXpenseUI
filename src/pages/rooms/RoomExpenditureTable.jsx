@@ -7,6 +7,7 @@ import InputDatePicker from '../../component/date-custom/inputDatePicker'
 import ButtonClear from '../../component/button-action/ButtonClear'
 import ButtonFind from '../../component/button-action/ButtonFind'
 import { toast } from 'sonner'
+import MRTCustom from '../../component/table-custom/MRTCustom'
 const ExpenseTable = () => {
 	const [expenses, setExpenses] = useState([])
 	const [loading, setLoading] = useState(false)
@@ -106,6 +107,63 @@ const ExpenseTable = () => {
 		return acc
 	}, {})
 
+	const columns = [
+		{
+			accessorKey: 'title',
+			header: 'Tiêu đề',
+			Cell: ({ row }) => (
+				<span className="px-4 py-3 text-sm text-gray-700 ">
+					{row.original.title}
+				</span>
+			)
+		},
+		{
+			accessorKey: 'username',
+			header: 'Người tạo',
+			Cell: ({ row }) => (
+				<span className="px-4 py-3 text-sm text-gray-700">
+					{row.original.username}
+				</span>
+			)
+		},
+		{
+			accessorKey: 'amount',
+			header: 'Số tiền',
+			Cell: ({ row }) => (
+				<span className="px-4 py-3 text-right text-base font-bold text-gray-900">
+					{formatCurrency(row.original.amount)}
+				</span>
+			)
+		},
+		{
+			accessorKey: 'notes',
+			header: 'Ghi chú',
+			Cell: ({ row }) => (
+				<span className="px-4 py-3 text-sm text-gray-700">
+					{row.original.notes}
+				</span>
+			)
+		},
+		{
+			accessorKey: 'used_date',
+			header: 'Ngày dùng',
+			Cell: ({ row }) => (
+				<span className="px-4 py-3 text-sm text-gray-700">
+					{formatDate(row.original.used_date)}
+				</span>
+			)
+		},
+		{
+			accessorKey: 'created_at',
+			header: 'Ngày tạo',
+			Cell: ({ row }) => (
+				<span className="px-4 py-3 text-sm text-gray-700">
+					{formatDate(row.original.created_at)}
+				</span>
+			)
+		}
+	]
+
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-green-100 via-white to-teal-100 bg-cover p-6">
 			<div className="max-w-7xl mx-auto">
@@ -198,7 +256,7 @@ const ExpenseTable = () => {
 				</div>
 
 				{/* Table */}
-				<div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+				{/* <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
 					<div className="overflow-x-auto">
 						<table className="w-full table-auto border-collapse">
 							<thead className="bg-gray-100 border-b border-gray-200">
@@ -208,11 +266,11 @@ const ExpenseTable = () => {
 									</th>
 									<th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
 										Người tạo
-									</th>
-									{/* <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
+									</th> */}
+				{/* <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
 										Số lượng
 									</th> */}
-									<th className="px-4 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">
+				{/* <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">
 										Số tiền
 									</th>
 									<th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
@@ -258,11 +316,11 @@ const ExpenseTable = () => {
 											</td>
 											<td className="px-4 py-3 text-sm text-gray-700">
 												{expense.username}
-											</td>
-											{/* <td className="px-4 py-3 text-center text-sm text-gray-700">
+											</td> */}
+				{/* <td className="px-4 py-3 text-center text-sm text-gray-700">
 												{expense.quantity}
 											</td> */}
-											<td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
+				{/* <td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
 												{formatCurrency(expense.amount)}
 											</td>
 											<td className="px-4 py-3 text-sm text-gray-700">
@@ -280,7 +338,16 @@ const ExpenseTable = () => {
 							</tbody>
 						</table>
 					</div>
-				</div>
+				</div> */}
+
+				<MRTCustom
+					columns={columns}
+					data={expenses}
+					// data = {[]}
+					isLoading={loading}
+					pagination={{ pageIndex: 0, pageSize: 50 }}
+					onPaginationChange={() => {}}
+				/>
 			</div>
 		</div>
 	)
