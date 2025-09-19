@@ -325,11 +325,11 @@ const MemberExpenseDetails = () => {
           <LoadingComponent message={"Đang tải dữ liệu..."}/>
         )}
         
-        {error && (
+        {/* {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <p className="text-red-700 text-center">{error}</p>
           </div>
-        )}
+        )} */}
 
 				<div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-6">
 					<div className="flex items-center gap-2 mb-4">
