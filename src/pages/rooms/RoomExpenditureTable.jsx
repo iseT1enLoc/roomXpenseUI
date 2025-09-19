@@ -177,7 +177,7 @@ const ExpenseTable = () => {
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
 					{Object.entries(memberSummary).map(([username, info]) => (
 						<Link
-							to={`/member-expense-details?member_id=${info.id}&name=${username}`}
+							to={`/member-expense-details?room_id=${room_id}&member_id=${info.id}&name=${username}`}
 							key={info.id}
 							className="flex justify-between items-center p-4 bg-white rounded-xl shadow-lg border border-gray-100 hover:bg-gray-50 transition cursor-pointer no-underline"
 						>

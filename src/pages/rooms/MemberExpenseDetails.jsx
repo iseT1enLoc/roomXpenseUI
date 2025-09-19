@@ -9,6 +9,7 @@ const MemberExpenseDetails = () => {
   const searchParams = new URLSearchParams(location.search);
   const member_id = searchParams.get('member_id');
   const member_name = searchParams.get('name');
+  const room_id = searchParams.get("room_id")
   const navigate = useNavigate();
 
   const [memberExpenses, setMemberExpenses] = useState([]);
@@ -20,7 +21,6 @@ const MemberExpenseDetails = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
-  const room_id = import.meta.env.VITE_ROOM_ID;
   const baseUrl = `${import.meta.env.VITE_BACKEND_URL}/api/protected/expense/member`;
 
   const formatCurrency = (amount) => {
@@ -67,9 +67,10 @@ const MemberExpenseDetails = () => {
         return;
       }
 
+
       const params = {
         user_id: member_id,
-        room_id,
+        room_id:room_id,
         year: selectedYear,
       };
       if (selectedMonth) params.month = selectedMonth;
