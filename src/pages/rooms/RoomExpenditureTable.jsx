@@ -14,12 +14,16 @@ const ExpenseTable = () => {
 	const [error, setError] = useState('')
 	const [filters, setFilters] = useState({
 		start_date: null,
-		end_date: null
+		end_date: null,
 	})
 	const [sortBy, setSortBy] = useState('used_date')
 	const [sortOrder, setSortOrder] = useState('desc')
 	const { room_id } = useParams()
-
+	const [pagination,setPagination] = useState({
+		pageIndex:0,
+		pageSize:50
+	})
+	const [total,setTotal] = useState(0)
 	// Format currency
 	const formatCurrency = (amount) =>
 		new Intl.NumberFormat('vi-VN', {
@@ -44,7 +48,8 @@ const ExpenseTable = () => {
 		try {
 			const token = localStorage.getItem('oauthstate')
 			if (!token) throw new Error('Token không hợp lệ')
-
+			console.log(pagination.pageIndex)
+			console.log(pagination.pageSize)
 			const params = {
 				room_id,
 				start_date: customFilters.start_date
@@ -52,11 +57,14 @@ const ExpenseTable = () => {
 					: undefined,
 				end_date: customFilters.end_date
 					? customFilters.end_date.format('DD/MM/YYYY')
-					: undefined
+					: undefined,
+				page:pagination.pageIndex,
+				size:pagination.pageSize
 			}
 
 			const data = await getMemberExpenseDetailsV2(token, params)
-			setExpenses(Array.isArray(data) ? data : data?.data || [])
+			setTotal(data?.data?.total || 0)
+			setExpenses(Array.isArray(data) ? data : data?.data.expenses || [])
 		} catch (err) {
 			setError(err.message || 'Đã xảy ra lỗi')
 			setExpenses([])
@@ -66,8 +74,9 @@ const ExpenseTable = () => {
 	}
 
 	useEffect(() => {
-		fetchExpenses()
-	}, [room_id])
+		console.log("Enter fetching pagination")
+		fetchExpenses(filters)
+	}, [room_id,pagination])
 
 	const clearFilters = () => {
 		const cleared = { start_date: null, end_date: null }
@@ -254,99 +263,13 @@ const ExpenseTable = () => {
 						</Link>
 					))}
 				</div>
-
-				{/* Table */}
-				{/* <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-					<div className="overflow-x-auto">
-						<table className="w-full table-auto border-collapse">
-							<thead className="bg-gray-100 border-b border-gray-200">
-								<tr>
-									<th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-										Tiêu đề
-									</th>
-									<th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-										Người tạo
-									</th> */}
-				{/* <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
-										Số lượng
-									</th> */}
-				{/* <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">
-										Số tiền
-									</th>
-									<th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-										Ghi chú
-									</th>
-									<th className="px-4 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
-										Ngày dùng
-									</th>
-									<th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-										Ngày tạo
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								{loading ? (
-									<tr>
-										<td colSpan="7" className="text-center py-6 text-gray-500">
-											Loading...
-										</td>
-									</tr>
-								) : error ? (
-									<tr>
-										<td colSpan="7" className="text-center py-6 text-red-600">
-											{error}
-										</td>
-									</tr>
-								) : sortedExpenses.length === 0 ? (
-									<tr>
-										<td colSpan="7" className="text-center py-6 text-gray-500">
-											Không có dữ liệu
-										</td>
-									</tr>
-								) : (
-									sortedExpenses.map((expense, index) => (
-										<tr
-											key={expense.id}
-											className={`${
-												index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-											} hover:bg-indigo-50 transition-colors duration-200`}
-										>
-											<td className="px-4 py-3 text-sm text-gray-700">
-												{expense.title}
-											</td>
-											<td className="px-4 py-3 text-sm text-gray-700">
-												{expense.username}
-											</td> */}
-				{/* <td className="px-4 py-3 text-center text-sm text-gray-700">
-												{expense.quantity}
-											</td> */}
-				{/* <td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
-												{formatCurrency(expense.amount)}
-											</td>
-											<td className="px-4 py-3 text-sm text-gray-700">
-												{expense.notes}
-											</td>
-											<td className="px-4 py-3 text-sm text-gray-700">
-												{formatDate(expense.used_date)}
-											</td>
-											<td className="px-4 py-3 text-sm text-gray-700">
-												{formatDate(expense.created_at)}
-											</td>
-										</tr>
-									))
-								)}
-							</tbody>
-						</table>
-					</div>
-				</div> */}
-
 				<MRTCustom
 					columns={columns}
 					data={expenses}
-					// data = {[]}
 					isLoading={loading}
-					pagination={{ pageIndex: 0, pageSize: 50 }}
-					onPaginationChange={() => {}}
+					pagination={pagination}
+					onPaginationChange={setPagination}
+					rowCount={total}
 				/>
 			</div>
 		</div>
