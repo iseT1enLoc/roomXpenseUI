@@ -2,35 +2,36 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Calendar, DollarSign, Clock, Search, Filter } from 'lucide-react';
-import { getMemberExpenseDetails } from '../../api/expense';
+import { getMemberExpenseDetails, getOneMemberExpense } from '../../api/expense';
 import LoadingComponent from '../../component/LoadingIcon';
+import MRTCustom from '../../component/table-custom/MRTCustom';
+import InputDatePicker from '../../component/date-custom/inputDatePicker'
+import ButtonClear from '../../component/button-action/ButtonClear'
+import ButtonFind from '../../component/button-action/ButtonFind'
+import { toast } from 'sonner'
+
 const MemberExpenseDetails = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const member_id = searchParams.get('member_id');
+  const user_id = searchParams.get('member_id');
   const member_name = searchParams.get('name');
+  const room_id = searchParams.get("room_id")
+  
   const navigate = useNavigate();
 
   const [memberExpenses, setMemberExpenses] = useState([]);
-  const [selectedYear, setSelectedYear] = useState('2025');
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [selectedDay, setSelectedDay] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
-
-  const room_id = import.meta.env.VITE_ROOM_ID;
+  const [total,setTotal] = useState(0);
   const baseUrl = `${import.meta.env.VITE_BACKEND_URL}/api/protected/expense/member`;
 
-  const formatCurrency = (amount) => {
-    const num = parseInt(amount, 10);
-    if (isNaN(num)) return '';
-    if (num >= 1_000_000) return `${num / 1_000_000} triệu đồng`;
-    if (num >= 1_000) return `${num / 1_000} ngàn đồng`;
-    return `${num} đồng`;
-  };
-
+	const formatCurrency = (amount) =>
+		new Intl.NumberFormat('vi-VN', {
+			style: 'currency',
+			currency: 'VND'
+		}).format(amount)
+    
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleString('vi-VN', {
@@ -41,14 +42,11 @@ const MemberExpenseDetails = () => {
       minute: '2-digit',
     });
   };
-
-  const getShortDate = (dateStr) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('vi-VN', {
-      month: 'short',
-      day: 'numeric',
-    });
-  };
+  const [filters, setFilters] = useState({
+    start_date: null,
+    end_date: null,
+  })
+  const [expenses,setExpense] = useState([])
 
   // Filter expenses based on search term
   const filteredExpenses = memberExpenses.filter(expense =>
@@ -56,35 +54,38 @@ const MemberExpenseDetails = () => {
   );
 
   // Calculate total amount
-  const totalAmount = filteredExpenses.reduce((sum, expense) => sum + parseInt(expense.amount || 0, 10), 0);
+  const totalAmount = expenses.reduce((sum, expense) => sum + parseInt(expense.amount || 0, 10), 0);
+  const [pagination,setPagination] = useState({
+    pageIndex:0,
+    pageSize:20
+  })
+ 
 
-  useEffect(() => {
-    const fetchMemberExpense = async () => {
+  const fetchMemberExpense = async (customFilters = filters) => {
       const token = localStorage.getItem('oauthstate');
       if (!token) {
         setError('Token không hợp lệ.');
         setLoading(false);
         return;
       }
-
-      const params = {
-        user_id: member_id,
-        room_id,
-        year: selectedYear,
-      };
-      if (selectedMonth) params.month = selectedMonth;
-      if (selectedDay) params.day = selectedDay;
-
+			const params = {
+				room_id,
+        user_id,
+				start_date: customFilters.start_date
+					? customFilters.start_date.format('DD/MM/YYYY')
+					: undefined,
+				end_date: customFilters.end_date
+					? customFilters.end_date.format('DD/MM/YYYY')
+					: undefined,
+				page:pagination.pageIndex,
+				size:pagination.pageSize
+			}
       try {
-        const res = await axios.get(baseUrl, {
-          params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (res.data.status === 'success') {
-          setMemberExpenses(res.data.data);
+        const res = await getOneMemberExpense(token,params)
+        if (res.status === 'success') {
+          // setMemberExpenses(res.data.data);
+          setExpense(Array.isArray(res) ? res : res?.data.expenses || [])
+          setTotal(res.data.total)
         } else {
           setError('Không thể lấy dữ liệu chi tiết.');
         }
@@ -95,22 +96,81 @@ const MemberExpenseDetails = () => {
         setLoading(false);
       }
     };
-
-    if (member_id) {
-      fetchMemberExpense();
+  const clearFilters = () => {
+		const cleared = { start_date: null, end_date: null }
+		setFilters(cleared)
+    fetchMemberExpense(cleared);
+	}
+  useEffect(() => {
+    if (user_id) {
+      fetchMemberExpense(filters);
     } else {
       setError('Không có mã thành viên.');
       setLoading(false);
     }
-  }, [member_id, room_id, selectedYear, selectedMonth, selectedDay]);
+  }, [user_id, room_id,pagination]);
 
   const handleBack = () => {
     navigate(-1);
   };
-
+	const columns = [
+		{
+			accessorKey: 'title',
+			header: 'Tiêu đề',
+			Cell: ({ row }) => (
+				<span className="px-4 py-3 text-sm text-gray-700 ">
+					{row.original.title}
+				</span>
+			)
+		},
+		// {
+		// 	accessorKey: 'username',
+		// 	header: 'Người tạo',
+		// 	Cell: ({ row }) => (
+		// 		<span className="px-4 py-3 text-sm text-gray-700">
+		// 			{row.original.username}
+		// 		</span>
+		// 	)
+		// },
+		{
+			accessorKey: 'amount',
+			header: 'Số tiền',
+			Cell: ({ row }) => (
+				<span className="px-4 py-3 text-right text-base font-bold text-gray-900">
+					{formatCurrency(row.original.amount)}
+				</span>
+			)
+		},
+		{
+			accessorKey: 'notes',
+			header: 'Ghi chú',
+			Cell: ({ row }) => (
+				<span className="px-4 py-3 text-sm text-gray-700">
+					{row.original.notes}
+				</span>
+			)
+		},
+		{
+			accessorKey: 'used_date',
+			header: 'Ngày dùng',
+			Cell: ({ row }) => (
+				<span className="px-4 py-3 text-sm text-gray-700">
+					{formatDate(row.original.used_date)}
+				</span>
+			)
+		},
+		{
+			accessorKey: 'created_at',
+			header: 'Ngày tạo',
+			Cell: ({ row }) => (
+				<span className="px-4 py-3 text-sm text-gray-700">
+					{formatDate(row.original.created_at)}
+				</span>
+			)
+		}
+	]
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-teal-50">
-      {/* Header Section */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -130,7 +190,6 @@ const MemberExpenseDetails = () => {
               </div>
             </div>
             
-            {/* Total Amount Card */}
             <div className="hidden md:flex items-center bg-green-50 rounded-lg px-4 py-2">
               <DollarSign className="w-5 h-5 text-green-600 mr-2" />
               <div className="text-right">
@@ -143,22 +202,19 @@ const MemberExpenseDetails = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Mobile Total Amount */}
         <div className="md:hidden mb-4 bg-green-50 rounded-lg p-4">
           <div className="flex items-center justify-center">
             <DollarSign className="w-5 h-5 text-green-600 mr-2" />
             <div className="text-center">
               <p className="text-sm text-gray-600">Tổng chi tiêu</p>
-              <p className="text-xl font-bold text-green-700">{formatCurrency(totalAmount)}</p>
+              {/* <p className="text-xl font-bold text-green-700">{formatCurrency(totalAmount)}</p> */}
             </div>
           </div>
         </div>
 
-        {/* Controls Section */}
-        <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            {/* Search Bar */}
-            <div className="flex-1 max-w-md">
+        {/* <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"> */}
+            {/* <div className="flex-1 max-w-md">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
@@ -169,10 +225,9 @@ const MemberExpenseDetails = () => {
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
               </div>
-            </div>
+            </div> */}
 
-            {/* Filter Toggle for Mobile */}
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className="lg:hidden flex items-center px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
@@ -181,7 +236,6 @@ const MemberExpenseDetails = () => {
                 Bộ lọc
               </button>
 
-              {/* Desktop Filters */}
               <div className="hidden lg:flex items-center gap-3">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-gray-500" />
@@ -218,11 +272,9 @@ const MemberExpenseDetails = () => {
                   ))}
                 </select>
               </div>
-            </div>
-          </div>
-
-          {/* Mobile Filters Dropdown */}
-          {showFilters && (
+            </div> */}
+          {/* </div> */}
+          {/* {showFilters && (
             <div className="lg:hidden mt-4 pt-4 border-t border-gray-200">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
@@ -265,35 +317,96 @@ const MemberExpenseDetails = () => {
                 </div>
               </div>
             </div>
-          )}
-        </div>
+          )} */}
+        {/* </div> */}
 
         {/* Loading and Error States */}
         {loading && (
           <LoadingComponent message={"Đang tải dữ liệu..."}/>
         )}
         
-        {error && (
+        {/* {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <p className="text-red-700 text-center">{error}</p>
           </div>
-        )}
+        )} */}
+
+				<div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-6">
+					<div className="flex items-center gap-2 mb-4">
+						<Filter className="w-5 h-5 text-indigo-600" />
+						<h2 className="text-lg font-semibold text-gray-900">Bộ lọc</h2>
+					</div>
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+						{/* Start Date */}
+						<InputDatePicker
+							label="Từ ngày"
+							value={filters.start_date}
+							views={['month', 'year', 'day']}
+							openTo="day"
+							onChange={(date) =>
+								setFilters((prev) => ({ ...prev, start_date: date }))
+							}
+						/>
+						{/* End Date */}
+						<InputDatePicker
+							label="Đến ngày"
+							value={filters.end_date}
+							views={['month', 'year', 'day']}
+							openTo="day"
+							onChange={(date) =>
+								setFilters((prev) => ({ ...prev, end_date: date }))
+							}
+							minDate={filters.start_date}
+							disabled={!filters.start_date}
+						/>
+						<div className="flex gap-4 mt-1">
+							<div>
+								<ButtonFind
+									onClick={() => {
+										if (!filters.start_date) {
+											toast.error('Vui lòng chọn "Từ ngày" trước khi tìm kiếm!')
+											return
+										}
+										fetchMemberExpense(filters);
+										toast.success('Tìm kiếm thành công')
+									}}
+									className="w-full md:w-auto px-3 py-1.5 text-sm"
+								/>
+							</div>
+							<div>
+								<ButtonClear
+									onClick={clearFilters}
+									className="w-full md:w-auto px-3 py-1.5 text-sm"
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+        <MRTCustom
+          columns={columns}
+          data={expenses}
+          isLoading={loading}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          rowCount={total}
+        />
+
 
         {/* Expense List */}
-        {!loading && !error && (
+        {/* {!loading && !error && (
           <>
             {filteredExpenses.length > 0 ? (
-              <>
+              <> */}
                 {/* Results Count */}
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <p className="text-sm text-gray-600">
                     Hiển thị {filteredExpenses.length} kết quả
                     {searchTerm && ` cho "${searchTerm}"`}
                   </p>
-                </div>
-
+                </div> */}
+                
                 {/* Desktop Table View */}
-                <div className="hidden md:block bg-white rounded-xl shadow-sm border overflow-hidden mb-6">
+                {/* <div className="hidden md:block bg-white rounded-xl shadow-sm border overflow-hidden mb-6">
                   <table className="w-full">
                     <thead className="bg-gray-50">
                       <tr>
@@ -328,10 +441,9 @@ const MemberExpenseDetails = () => {
                       ))}
                     </tbody>
                   </table>
-                </div>
+                </div> */}
 
-                {/* Mobile Card View */}
-                <div className="md:hidden space-y-3 mb-6">
+                {/* <div className="md:hidden space-y-3 mb-6">
                   {filteredExpenses.map((expense, index) => (
                     <div
                       key={index}
@@ -374,7 +486,7 @@ const MemberExpenseDetails = () => {
               </div>
             )}
           </>
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -75,7 +75,22 @@ export const getMemberExpenseDetailsV2 = async (token, params) => {
     throw error;
   }
 }
-
+export const getOneMemberExpense = async (token, params) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE}/api/protected/expense/member`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    console.error('Fail to get one member expense', error);
+    throw error;
+  }
+}
 export const getAMemberExpenseDetails = async (token, { user_id, room_id, year, month, day }) => {
   try {
     const params = { user_id, room_id, year };
